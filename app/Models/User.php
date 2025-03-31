@@ -11,7 +11,7 @@ class User extends Model
     protected $returnType       = 'object';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ["name", "password", "email"];
+    protected $allowedFields    = ["id", "name", "password", "email"];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
@@ -27,11 +27,7 @@ class User extends Model
     protected $deletedField  = 'deleted_at';
 
     // Validation
-    protected $validationRules      = [
-        "name" => "required",
-        "password" => "required",
-        "email" => "required"
-    ];
+    protected $validationRules      = [];
     protected $validationMessages   = [];
     protected $skipValidation       = false;
     protected $cleanValidationRules = true;

@@ -41,4 +41,10 @@ class Validation extends BaseConfig
     // --------------------------------------------------------------------
     // Rules
     // --------------------------------------------------------------------
+
+    public array $users = [
+        "name" => "required",
+        "password" => "required",
+        "email" => "required|valid_email|is_unique[users.email]",
+    ];
 }

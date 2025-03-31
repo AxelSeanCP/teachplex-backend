@@ -2,22 +2,23 @@
 
 namespace App\Controllers;
 
-use App\Controllers\ApiBaseController;
-use App\Exceptions\NotFoundError;
-use App\Models\User;
+use App\Controllers\BaseController;
 use Exception;
 
-class UserController extends ApiBaseController
+class UserController extends BaseController
 {
+    protected $userService;
+
+    //injection happens at App\Config\Services
+    public function __construct()
+    {
+        $this->userService = service("userService");
+    }
+
     public function index()
     {
         try {
-            $userModel = new User();
-            $users = $userModel->findAll();
-
-            if (count($users) == 0) {
-                throw new NotFoundError("Users not found");
-            }
+            $users = $this->userService->getAll();
 
             return $this->respond([
                 "status" => "success",
@@ -27,4 +28,51 @@ class UserController extends ApiBaseController
             return $this->handleException($e);
         }
     }
+
+    public function store()
+    {
+        try {
+            $userData = validateRequest("users");
+
+            $id = $this->userService->add($userData);
+
+            return $this->respond([
+                "status" => "success",
+                "message" => "User added successfully",
+                "data" => [
+                    "userId" => $id
+                ]
+            ], 201);
+        } catch (Exception $e) {
+            return $this->handleException($e);
+        }
+    }
+
+    public function show($id = null) 
+    {
+        try {
+            $user = $this->userService->getById($id);
+
+            return $this->respond([
+                "status" => "success",
+                "data" => [
+                    "user" => $user,
+                ]
+            ], 200);
+        } catch (Exception $e) {
+            return $this->handleException($e);
+        }
+    }
+
+    // public function update($id = null)
+    // {
+    //     $userData = validateRequest("users");
+
+        
+    // }
+
+    // public function destroy($id = null)
+    // {
+
+    // }
 }
