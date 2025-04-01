@@ -7,18 +7,18 @@ use Exception;
 
 class UserController extends BaseController
 {
-    protected $userService;
+    protected $service;
 
     //injection happens at App\Config\Services
     public function __construct()
     {
-        $this->userService = service("userService");
+        $this->service = service("userService");
     }
 
     public function index()
     {
         try {
-            $users = $this->userService->getAll();
+            $users = $this->service->getAll();
 
             return $this->respond([
                 "status" => "success",
@@ -34,7 +34,7 @@ class UserController extends BaseController
         try {
             $userData = validateRequest("users");
 
-            $id = $this->userService->add($userData);
+            $id = $this->service->add($userData);
 
             return $this->respond([
                 "status" => "success",
@@ -51,7 +51,7 @@ class UserController extends BaseController
     public function show($id = null) 
     {
         try {
-            $user = $this->userService->getById($id);
+            $user = $this->service->getById($id);
 
             return $this->respond([
                 "status" => "success",

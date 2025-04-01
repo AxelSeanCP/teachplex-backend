@@ -9,35 +9,34 @@ use App\Exceptions\UnauthorizedError;
 
 class UserService extends BaseService
 {
-    protected $userModel;
+    protected $model;
 
     public function __construct(User $userModel)
     {
-        parent::__construct();
-        $this->userModel = $userModel;
+        $this->model = $userModel;
     }
 
-    public function verifyUserCredential($email, $password) 
+    public function verifyUserCredentials($email, $password) 
     {
-        $user = $this->userModel->where("email", $email)->findAll();
-
+        $user = $this->model->where("email", $email)->first();
+        
         if (!$user) {
             throw new UnauthorizedError("Login failed. Email not found");
         }
 
-        $hashedPassword = $user["password"];
+        $hashedPassword = $user->password;
         $match = password_verify($password, $hashedPassword);
 
         if (!$match) {
             throw new UnauthorizedError("Login failed. Password is wrong");
         }
 
-        return $user["id"];
+        return $user->id;
     }
 
     public function verifyNewUsername($name)
     {
-        $user = $this->userModel->where("name", $name)->findAll();
+        $user = $this->model->where("name", $name)->first();
 
         if ($user) {
             throw new BadRequestError("User with this name already exists");
@@ -60,14 +59,14 @@ class UserService extends BaseService
             "email" => $userData["email"],
         ];
         
-        $this->userModel->insert($data);
+        $this->model->insert($data);
         
         return $id;
     }
 
     public function getAll()
     {
-        $users = $this->userModel->findAll();
+        $users = $this->model->findAll();
 
         if (empty($users)) {
             throw new NotFoundError("Users not found");
@@ -78,7 +77,7 @@ class UserService extends BaseService
 
     public function getById($id)
     {
-        $user = $this->userModel->find($id);
+        $user = $this->model->find($id);
 
         if (!$user) {
             throw new NotFoundError("User not found");

@@ -12,7 +12,7 @@ class BaseController extends ResourceController
     use ResponseTrait;
 
     protected $format = "json";
-    protected $helpers = ["validation_helper"];
+    protected $helpers = ["validation_helper", "jwt_helper"];
 
     protected function error($message = "An error occured", $statusCode = 400)
     {

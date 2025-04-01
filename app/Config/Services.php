@@ -2,9 +2,11 @@
 
 namespace Config;
 
-use CodeIgniter\Config\BaseService;
+use App\Models\Authentication;
 use App\Models\User;
+use CodeIgniter\Config\BaseService;
 use App\Services\UserService;
+use App\Services\AuthenticationService;
 
 /**
  * Services Configuration file.
@@ -21,12 +23,21 @@ use App\Services\UserService;
  */
 class Services extends BaseService
 {
-     public static function userService($getShared = true)
-     {
+    public static function userService($getShared = true)
+    {
         if ($getShared) {
             return static::getSharedInstance(__FUNCTION__);
         }
 
         return new UserService(new User());
-     }
+    }
+
+    public static function authenticationService($getShared = true)
+    {
+        if($getShared) {
+            return static::getSharedInstance(__FUNCTION__);
+        }
+
+        return new authenticationService(new Authentication());
+    }
 }

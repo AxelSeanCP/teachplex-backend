@@ -43,8 +43,17 @@ class Validation extends BaseConfig
     // --------------------------------------------------------------------
 
     public array $users = [
-        "name" => "required",
-        "password" => "required",
-        "email" => "required|valid_email|is_unique[users.email]",
+        "name" => "required|string",
+        "password" => "required|string",
+        "email" => "required|string|valid_email|is_unique[users.email]",
+    ];
+
+    public array $login = [
+        "email" => "required|string|valid_email",
+        "password" => "required|string"
+    ];
+
+    public array $token = [
+        "refreshToken" => "required|string"
     ];
 }
