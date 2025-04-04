@@ -5,9 +5,8 @@ namespace App\Filters;
 use CodeIgniter\Filters\FilterInterface;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
-use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
 use App\Exceptions\UnauthorizedError;
+use Config\Services;
 
 class JWTAuth implements FilterInterface
 {
@@ -36,11 +35,14 @@ class JWTAuth implements FilterInterface
         }
 
         $token = explode(" ", $header)[1] ?? null;
-        $decoded = verifyToken($token, getenv("ACCESS_TOKEN_KEY"));
+        $decoded = verifyToken($token, "ACCESS_TOKEN_KEY");
 
         if (!$decoded) {
             throw new UnauthorizedError("Invalid token");
         }
+
+        // $request->userId = $decoded->sub; // throw undefined property in controller
+        Services::userContext()->setUserId($decoded->sub);
 
         return;
     }

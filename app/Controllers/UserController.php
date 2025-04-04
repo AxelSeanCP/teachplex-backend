@@ -3,7 +3,6 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
-use Exception;
 
 class UserController extends BaseController
 {
@@ -17,51 +16,39 @@ class UserController extends BaseController
 
     public function index()
     {
-        try {
-            $users = $this->service->getAll();
+        $users = $this->service->getAll();
 
-            return $this->respond([
-                "status" => "success",
-                "data" => $users
-            ], 200);
-        } catch (Exception $e) {
-            return $this->handleException($e);
-        }
+        return $this->respond([
+            "status" => "success",
+            "data" => $users
+        ], 200);
     }
 
     public function store()
     {
-        try {
-            $userData = validateRequest("users");
+        $userData = validateRequest("users");
 
-            $id = $this->service->add($userData);
+        $id = $this->service->add($userData);
 
-            return $this->respond([
-                "status" => "success",
-                "message" => "User added successfully",
-                "data" => [
-                    "userId" => $id
-                ]
-            ], 201);
-        } catch (Exception $e) {
-            return $this->handleException($e);
-        }
+        return $this->respond([
+            "status" => "success",
+            "message" => "User added successfully",
+            "data" => [
+                "userId" => $id
+            ]
+        ], 201);
     }
 
     public function show($id = null) 
     {
-        try {
-            $user = $this->service->getById($id);
+        $user = $this->service->getById($id);
 
-            return $this->respond([
-                "status" => "success",
-                "data" => [
-                    "user" => $user,
-                ]
-            ], 200);
-        } catch (Exception $e) {
-            return $this->handleException($e);
-        }
+        return $this->respond([
+            "status" => "success",
+            "data" => [
+                "user" => $user,
+            ]
+        ], 200);
     }
 
     // public function update($id = null)

@@ -4,27 +4,24 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class CreateUsersTable extends Migration
+class CreateEnrollmentTable extends Migration
 {
     public function up()
     {
         $this->forge->addField([
             "id" => [
                 "type" => "VARCHAR",
-                "constraint" => "50"
+                "constraint" => 50
             ],
-            "name" => [
+            "userId" => [
                 "type" => "VARCHAR",
-                "constraint" => "255"
+                "constraint" => 50,
+                "null" => false,
             ],
-            "password" => [
+            "courseId" => [
                 "type" => "VARCHAR",
-                "constraint" => "255"
-            ],
-            "email" => [
-                "type" => "VARCHAR",
-                "constraint" => "255",
-                "unique" => true
+                "constraint" => 255,
+                "null" => false,
             ],
             "created_at" => [
                 "type" => "DATETIME",
@@ -36,12 +33,14 @@ class CreateUsersTable extends Migration
             ]
         ]);
 
-        $this->forge->addPrimaryKey("id");
-        $this->forge->createTable("users");
+        $this->forge->addKey("id", true);
+        $this->forge->addForeignKey("userId", "users", "id", "CASCADE", "CASCADE");
+
+        $this->forge->createTable("enrollments");
     }
 
     public function down()
     {
-        $this->forge->dropTable("users");
+        $this->forge->dropTable("enrollments");
     }
 }

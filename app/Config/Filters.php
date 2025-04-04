@@ -35,7 +35,7 @@ class Filters extends BaseFilters
         'forcehttps'    => ForceHTTPS::class,
         'pagecache'     => PageCache::class,
         'performance'   => PerformanceMetrics::class,
-        'jwt'           => JWTAuth::class,
+        'auth'          => JWTAuth::class,
     ];
 
     /**
@@ -106,6 +106,6 @@ class Filters extends BaseFilters
      * @var array<string, array<string, list<string>>>
      */
     public array $filters = [
-        "jwt" => ["before" => "api/enrollments/*"]
+        
     ];
 }

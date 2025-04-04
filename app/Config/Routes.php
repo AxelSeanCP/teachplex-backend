@@ -18,5 +18,11 @@ $routes->group("api", function ($routes) {
         $routes->delete("/", "AuthenticationController::logout");
     });
 
+    $routes->group("enrollments", ["filter" => "auth"], function ($routes) {
+        $routes->post("/", "EnrollmentController::store");
+        $routes->get("/", "EnrollmentController::index");
+        $routes->delete("/", "EnrollmentController::destroy");
+    });
+
     $routes->get("test", "UserController::test");
 });

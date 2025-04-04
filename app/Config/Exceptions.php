@@ -2,6 +2,7 @@
 
 namespace Config;
 
+use App\Exceptions\HttpException;
 use CodeIgniter\Config\BaseConfig;
 use CodeIgniter\Debug\ExceptionHandler;
 use CodeIgniter\Debug\ExceptionHandlerInterface;
@@ -101,6 +102,10 @@ class Exceptions extends BaseConfig
      */
     public function handler(int $statusCode, Throwable $exception): ExceptionHandlerInterface
     {
+        if ($exception instanceof HttpException) {
+            return new \App\Exceptions\ExceptionHandler($this);
+        }
+
         return new ExceptionHandler($this);
     }
 }

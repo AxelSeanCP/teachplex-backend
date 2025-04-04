@@ -56,4 +56,8 @@ class Validation extends BaseConfig
     public array $token = [
         "refreshToken" => "required|string"
     ];
+
+    public array $enroll = [
+        "courseId" => "required|string"
+    ];
 }
