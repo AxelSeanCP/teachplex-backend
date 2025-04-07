@@ -24,5 +24,11 @@ $routes->group("api", function ($routes) {
         $routes->delete("/", "EnrollmentController::destroy");
     });
 
-    $routes->get("test", "UserController::test");
+    $routes->group("certificates", function ($routes) {
+        $routes->post("templates/upload", "CertificateController::upload");
+        $routes->post("/", "CertificateController::store", ["filter" => "auth"]);
+        $routes->get("download/(:any)", "CertificateController::download/$1");
+    });
+
+    $routes->get("test", "CertificateController::test");
 });

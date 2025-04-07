@@ -60,4 +60,9 @@ class Validation extends BaseConfig
     public array $enroll = [
         "courseId" => "required|string"
     ];
+
+    public array $certificate = [
+        "courseId" => "required|string",
+        "courseName" => "required|string",
+    ];
 }

@@ -45,6 +45,17 @@ class EnrollmentService extends BaseService
         return $id;
     }
 
+    public function get($userId, $courseId)
+    {
+        $enrollment = $this->model->where("userId", $userId)->where("courseId", $courseId)->first();
+
+        if (!$enrollment) {
+            throw new NotFoundError("User is not enrolled to this course");
+        }
+
+        return $enrollment;
+    }
+
     public function getAll($userId)
     {
         $enrollments = $this->model->where("userId", $userId)->findAll();
@@ -54,6 +65,17 @@ class EnrollmentService extends BaseService
         }
 
         return $enrollments;
+    }
+
+    public function edit($userId, $courseId)
+    {
+        $enrollment = $this->get($userId, $courseId);
+
+        $data = [
+            "isCompleted" => 1
+        ];
+
+        $this->model->update($enrollment["id"], $data);
     }
 
     public function delete($userId, $courseId)

@@ -4,7 +4,6 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use Config\Services;
-use Exception;
 
 class EnrollmentController extends BaseController
 {

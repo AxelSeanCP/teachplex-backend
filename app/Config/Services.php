@@ -3,12 +3,14 @@
 namespace Config;
 
 use App\Models\Authentication;
+use App\Models\Certificate;
 use App\Models\Enrollment;
 use App\Models\User;
 use CodeIgniter\Config\BaseService;
 use App\Services\UserService;
 use App\Services\AuthenticationService;
 use App\Services\EnrollmentService;
+use App\Services\CertificateService;
 use App\Services\UserContext;
 
 /**
@@ -30,6 +32,7 @@ class Services extends BaseService
     {
         return $getShared ? static::getSharedInstance("userContext") : new UserContext();
     }
+
     public static function userService($getShared = true)
     {
         if ($getShared) {
@@ -55,5 +58,17 @@ class Services extends BaseService
         }
 
         return new enrollmentService(new Enrollment());
+    }
+
+    public static function certificateService($getShared = true)
+    {
+        if ($getShared) {
+            return static::getSharedInstance(__FUNCTION__);
+        }
+
+        $userService = static::userService();
+        $enrollmentService = static::enrollmentService();
+
+        return new certificateService(new Certificate(), $userService, $enrollmentService);
     }
 }
