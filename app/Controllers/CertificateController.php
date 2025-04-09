@@ -62,19 +62,40 @@ class CertificateController extends BaseController
         ], 201);
    }
 
-   public function test()
+   public function index()
    {
-        $defaultTemplate = "blue_mountain.jpg";
-        $templatePath = FCPATH . "uploads/certificate_templates/" . $defaultTemplate;
+        $name = $this->request->getGet("name");
+        $email = $this->request->getGet("email");
 
-        $templateFile = file_exists($templatePath) ? $defaultTemplate : null;
+        $certificates = $this->service->getAll($name, $email);
 
-        return view("certificates/template", [
-            "user" => (object) array("name" => "Axel"),
-            "courseName" => "Belajar Meltryllis",
-            'date' => date('F j, Y'),
-            "certificateId" => "course-1234",
-            "templateFile" => $templateFile
-        ]);
+        return $this->respond([
+            "status" => "success",
+            "data" => [
+                "certificates" => $certificates
+            ]
+        ], 200);
    }
+
+   public function show($id = null)
+   {
+        $certificate = $this->service->getOne($id);
+
+        return $this->respond([
+            "status" => "success",
+            "data" => [
+                "certificate" => $certificate,
+            ]
+        ], 200);
+   }
+
+//    public function remove($id = null)
+//    {
+//         $this->service->delete($id);
+
+//         return $this->respond([
+//             "status" => "success",
+//             "message" => "Certificate deleted",
+//         ]);
+//    }
 }

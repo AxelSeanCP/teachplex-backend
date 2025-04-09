@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Exceptions\BadRequestError;
+use App\Exceptions\NotFoundError;
 use App\Services\UserService;
 use App\Models\Certificate;
 use Dompdf\Dompdf;
@@ -111,21 +112,56 @@ class CertificateService extends BaseService
 
     public function getOne($id)
     {
+        $certificate = $this->model
+        ->select("certificates.*, users.name as user_name")
+        ->join("users", "users.id = certificates.userId")
+        ->find($id);
 
+        if (!$certificate) {
+            throw new NotFoundError("Certificate not found. Invalid certificate id");
+        }
+
+        return $certificate;
     }
 
-    public function getAll()
+    public function getAll($name = null, $email = null)
     {
+        $builder = $this->model
+        ->select("certificates.*, users.name as user_name")
+        ->join("users", "users.id = certificates.userId");
 
+        if ($name) {
+            $builder->where("users.name", $name);
+        }
+
+        if ($email) {
+            $builder->where("users.email", $email);
+        }
+
+        $certificates = $builder->findAll();
+
+        if (empty($certificates)) {
+            throw new NotFoundError("Certificates not found");
+        }
+
+        return $certificates;
     }
 
-    public function delete($id)
-    {
+    // public function delete($id)
+    // {
+    //     $certificate = $this->getOne($id);
 
-    }
+    //     $filepath = WRITEPATH . "certificates/" . $certificate["id"] . ".pdf";
 
-    public function verifyCertificateAccess($id)
-    {
+    //     if (file_exists($filepath)) {
+    //         unlink($filepath);
+    //     }
 
-    }
+    //     $this->model->delete($id);
+    // }
+
+    // public function verifyCertificateAccess($id)
+    // {
+
+    // }
 }
