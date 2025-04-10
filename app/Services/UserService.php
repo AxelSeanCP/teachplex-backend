@@ -66,7 +66,9 @@ class UserService extends BaseService
 
     public function getAll()
     {
-        $users = $this->model->findAll();
+        $users = $this->model
+        ->select("id, name, email, created_at, updated_at")
+        ->findAll();
 
         if (empty($users)) {
             throw new NotFoundError("Users not found");
@@ -77,7 +79,9 @@ class UserService extends BaseService
 
     public function getById($id)
     {
-        $user = $this->model->find($id);
+        $user = $this->model
+        ->select("id, name, email, created_at, updated_at")
+        ->find($id);
 
         if (!$user) {
             throw new NotFoundError("User not found");

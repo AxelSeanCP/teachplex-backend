@@ -20,7 +20,9 @@ class UserController extends BaseController
 
         return $this->respond([
             "status" => "success",
-            "data" => $users
+            "data" => [
+                "users" => $users
+            ]
         ], 200);
     }
 
