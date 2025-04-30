@@ -5,7 +5,7 @@ use CodeIgniter\Router\RouteCollection;
 /**
  * @var RouteCollection $routes
  */
-$routes->group("api", function ($routes) {
+$routes->group("api", ["filter" => "cors"], function ($routes) {
     $routes->group("users", function ($routes) {
         $routes->get("/", "UserController::index");
         $routes->get("(:segment)", "UserController::show/$1");
@@ -33,5 +33,8 @@ $routes->group("api", function ($routes) {
         // $routes->delete("(:segment)", "CertificateController::remove/$1");
     });
 
-    $routes->get("test", "CertificateController::test");
+    // CORS preflight handler for all /api/* requests
+    $routes->options('(:any)', static function () {
+        return;
+    });
 });

@@ -3,6 +3,8 @@
 **teachplex-backend** is a backend API developed using **CodeIgniter 4 (CI4)** for a training and certification platform.  
 It handles user authentication, course enrollment, certificate generation, and more.
 
+> Important note: don't forget to add frontend url into allowedOrigins section in [App\Config\Cors](App/Config/Cors.php). for more information please read [this](setupcors.md)
+
 ---
 
 ## ⚙️ Overview
@@ -246,6 +248,8 @@ app/
   }
 }
 ```
+
+> token will contain userId in _sub_ property
 
 #### **Refresh token**
 
