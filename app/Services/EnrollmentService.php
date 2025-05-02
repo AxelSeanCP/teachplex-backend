@@ -61,7 +61,7 @@ class EnrollmentService extends BaseService
         $enrollments = $this->model->where("userId", $userId)->findAll();
 
         if (empty($enrollments)) {
-            throw new NotFoundError("No enrollments found");
+            return [];
         }
 
         return $enrollments;

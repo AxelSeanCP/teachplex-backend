@@ -334,28 +334,42 @@ app/
 
 #### **Get Enrollments**
 
-> returns enrollments from current user
+> Returns enrollments for the currently authenticated user.
 
 **Endpoint:** `GET /api/enrollments`
 
-**Response:**
+**Response (with enrollments):**
 
 ```json
 {
   "status": "success",
   "data": {
-    [
-      "id": "enrollment-1234",
-      "userId": "user-1234",
-      "courseId": "course-1234",
+    "enrollments": [
+      {
+        "id": "enrollment-1234",
+        "userId": "user-1234",
+        "courseId": "course-1234",
+        "isCompleted": 1
+      }
     ]
   }
 }
 ```
 
-#### **Delete Enrollment**
+**Response (if no enrollments):**
 
-> returns enrollments from current user
+```json
+{
+  "status": "success",
+  "data": {
+    "enrollments": []
+  }
+}
+```
+
+> Note: This endpoint always returns a `200 OK` status. If the user is not enrolled in any courses, the `enrollments` array will be empty.
+
+#### **Delete Enrollment**
 
 **Endpoint:** `DELETE /api/enrollments`
 
@@ -380,7 +394,46 @@ app/
 
 ### **4. Certificates**
 
+> Manage and verify course completion certificates. Some endpoints **require authentication**.
+
+#### **Upload Certificate Template**
+
+> This endpoint requires an **Access Token** in the request headers.
+
+**Headers:**
+
+```json
+{
+  "Authorization": "Bearer <your-access-token>"
+}
+```
+
+**Endpoint:** `POST /api/certificates/templates/upload`
+
+**Form Data:**
+
+- `template`: file (image-based certificate template)
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "filename": "random-generated-filename.png"
+}
+```
+
 #### **Create Certificate**
+
+> This endpoint requires an **Access Token** in the request headers.
+
+**Headers:**
+
+```json
+{
+  "Authorization": "Bearer <your-access-token>"
+}
+```
 
 **Endpoint:** `POST /api/certificates`
 
@@ -388,7 +441,6 @@ app/
 
 ```json
 {
-  "userId": "user-1234",
   "courseId": "course-1234",
   "courseName": "Learn JavaScript"
 }
@@ -410,7 +462,19 @@ app/
 
 #### **Get All Certificates**
 
+> You can also **filter results** using optional query parameters `name` and/or `email`.
+
 **Endpoint:** `GET /api/certificates`
+
+**Optional Query Parameters:**
+
+| Parameter | Type   | Description                             |
+| --------- | ------ | --------------------------------------- |
+| `name`    | string | Filter certificates by user's full name |
+| `email`   | string | Filter certificates by user's email     |
+
+**Example:**
+`GET /api/certificates?name=Axel&email=axel@example.com`
 
 **Response:**
 
@@ -426,8 +490,7 @@ app/
         "courseName": "Learn JavaScript",
         "pdfUrl": "/certificates/{certificateId}.pdf",
         "user_name": "Axel"
-      },
-      ...
+      }
     ]
   }
 }
@@ -452,6 +515,29 @@ app/
       "user_name": "Axel"
     }
   }
+}
+```
+
+#### **Download Certificate**
+
+> download link is obtainable from post and get in /certificates
+
+**Endpoint:** `GET /api/certificates/download/{filename}`
+
+**Behavior:**
+
+- Downloads a generated certificate PDF
+- Returns 404 if file does not exist
+
+**Response:**
+
+- PDF file download stream
+- Or JSON error:
+
+```json
+{
+  "status": "fail",
+  "message": "Certificate not found"
 }
 ```
 

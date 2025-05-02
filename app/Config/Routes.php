@@ -25,12 +25,12 @@ $routes->group("api", ["filter" => "cors"], function ($routes) {
     });
 
     $routes->group("certificates", function ($routes) {
-        $routes->post("templates/upload", "CertificateController::upload");
+        $routes->post("templates/upload", "CertificateController::upload", ["filter" => "auth"]);
         $routes->post("/", "CertificateController::store", ["filter" => "auth"]);
         $routes->get("download/(:any)", "CertificateController::download/$1");
         $routes->get("/", "CertificateController::index");
         $routes->get("(:segment)/verify", "CertificateController::show/$1");
-        // $routes->delete("(:segment)", "CertificateController::remove/$1");
+        // $routes->delete("(:segment)", "CertificateController::remove/$1", ["filter" => "auth"]);
     });
 
     // CORS preflight handler for all /api/* requests
