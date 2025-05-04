@@ -131,17 +131,17 @@ class CertificateService extends BaseService
         ->join("users", "users.id = certificates.userId");
 
         if ($name) {
-            $builder->where("users.name", $name);
+            $builder->like("users.name", $name);
         }
 
         if ($email) {
-            $builder->where("users.email", $email);
+            $builder->like("users.email", $email);
         }
 
         $certificates = $builder->findAll();
 
         if (empty($certificates)) {
-            throw new NotFoundError("Certificates not found");
+            return [];
         }
 
         return $certificates;

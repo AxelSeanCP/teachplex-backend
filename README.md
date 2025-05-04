@@ -452,7 +452,7 @@ app/
 {
   "status": "success",
   "data": {
-    "certificates": {
+    "certificate": {
       "id": "certificateId"
     },
     "downloadUrl": "download-link"
@@ -506,7 +506,7 @@ app/
 {
   "status": "success",
   "data": {
-    "certificates": {
+    "certificate": {
       "id": "certificateId",
       "userId": "user-1234",
       "courseId": "course-1234",

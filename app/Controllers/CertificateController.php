@@ -66,6 +66,7 @@ class CertificateController extends BaseController
    {
         $name = $this->request->getGet("name");
         $email = $this->request->getGet("email");
+        log_message("debug", json_encode($name));
 
         $certificates = $this->service->getAll($name, $email);
 
