@@ -4,47 +4,48 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class CreateCertificatesTable extends Migration
+class CreateLessonProgressTable extends Migration
 {
     public function up()
     {
         $this->forge->addField([
             "id" => [
                 "type" => "VARCHAR",
-                "constraint" => 50
+                "constraint" => 50,
             ],
             "user_id" => [
                 "type" => "VARCHAR",
                 "constraint" => 50,
-                "null" => false
             ],
-            "course_id" => [
+            "lesson_id" => [
                 "type" => "VARCHAR",
                 "constraint" => 50,
-                "null" => false
             ],
-            "pdf_url" => [
-                "type" => "VARCHAR",
-                "constraint" => 255,
+            "is_completed" => [
+                "type" => "BOOLEAN",
+                "default" => false,
+            ],
+            "completed_at" => [
+                "type" => "DATETIME"
             ],
             "created_at" => [
-                "type" => "DATETIME",
+                "type" => "DATETIME"
             ],
             "updated_at" => [
-                "type" => "DATETIME",
-            ]
+                "type" => "DATETIME"
+            ],
         ]);
 
         $this->forge->addPrimaryKey("id");
         $this->forge->addForeignKey("user_id", "users", "id", "CASCADE", "CASCADE");
-        $this->forge->addForeignKey("course_id", "courses", "id", "CASCADE", "CASCADE");
-        $this->forge->addUniqueKey(["user_id", "course_id"]);
+        $this->forge->addForeignKey("lesson_id", "lessons", "id", "CASCADE", "CASCADE");
+        $this->forge->addUniqueKey(["user_id", "lesson_id"]);
 
-        $this->forge->createTable("certificates");
+        $this->forge->createTable("lesson_progress");
     }
 
     public function down()
     {
-        $this->forge->dropTable("certificates");
+        $this->forge->dropTable("lesson_progress");
     }
 }

@@ -13,28 +13,28 @@ class CreateEnrollmentTable extends Migration
                 "type" => "VARCHAR",
                 "constraint" => 50
             ],
-            "userId" => [
+            "user_id" => [
                 "type" => "VARCHAR",
                 "constraint" => 50,
                 "null" => false,
             ],
-            "courseId" => [
+            "course_id" => [
                 "type" => "VARCHAR",
                 "constraint" => 255,
                 "null" => false,
             ],
             "created_at" => [
                 "type" => "DATETIME",
-                "null" => "true"
             ],
             "updated_at" => [
                 "type" => "DATETIME",
-                "null" => "true"
             ]
         ]);
 
         $this->forge->addKey("id", true);
-        $this->forge->addForeignKey("userId", "users", "id", "CASCADE", "CASCADE");
+        $this->forge->addForeignKey("user_id", "users", "id", "CASCADE", "CASCADE");
+        $this->forge->addForeignKey("course_id", "courses", "id", "CASCADE", "CASCADE");
+        $this->forge->addUniqueKey(["user_id", "course_id"]);
 
         $this->forge->createTable("enrollments");
     }

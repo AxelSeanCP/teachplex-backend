@@ -63,6 +63,5 @@ class Validation extends BaseConfig
 
     public array $certificate = [
         "courseId" => "required|string",
-        "courseName" => "required|string",
     ];
 }

@@ -24,7 +24,7 @@ class CertificateService extends BaseService
 
     public function checkCertificateExists($userId, $courseId)
     {
-        $certificate = $this->model->where("userId", $userId)->where("courseId", $courseId)->first();
+        $certificate = $this->model->where("user_id", $userId)->where("course_id", $courseId)->first();
         
         if ($certificate) {
             throw new BadRequestError("User already have this certificate");
@@ -71,16 +71,13 @@ class CertificateService extends BaseService
         }
 
         file_put_contents($filepath, $output);
-        
-        $this->enrollmentService->edit($userId, $courseId);
 
         $downloadLink = base_url("api/certificates/download/" . $filename);
         $data = [
             "id" => $id,
-            "userId" => $userId,
-            "courseId" => $courseId,
-            "courseName" => $courseName,
-            "pdfUrl" => $downloadLink
+            "user_id" => $userId,
+            "course_id" => $courseId,
+            "pdf_url" => $downloadLink
         ];
 
         $this->model->insert($data);

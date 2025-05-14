@@ -4,15 +4,15 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class Certificate extends Model
+class Lesson extends Model
 {
-    protected $table            = 'certificates';
+    protected $table            = 'lessons';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ["id", "user_id", "course_id", "pdfUrl"];
+    protected $allowedFields    = ["id", "course_id", "title", "slug", "video_url", "code_text", "content", "lesson_order"];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

@@ -1,0 +1,3 @@
+- buat lesson_progress dan course_progress migrations
+- tambah foreign key di enrollments dan certificates
+- tambah role di user, admin dan user

@@ -19,8 +19,8 @@ class EnrollmentService extends BaseService
     public function verifyEnrollment($userId, $courseId) 
     {
         $enrollment = $this->model
-        ->where("userId", $userId)
-        ->where("courseId", $courseId)
+        ->where("user_id", $userId)
+        ->where("course_id", $courseId)
         ->first();
         
         if ($enrollment) {
@@ -36,8 +36,8 @@ class EnrollmentService extends BaseService
 
         $data = [
             "id" => $id,
-            "userId" => $userId,
-            "courseId" => $courseId,
+            "user_id" => $userId,
+            "course_id" => $courseId,
         ];
 
         $this->model->insert($data);
@@ -47,7 +47,7 @@ class EnrollmentService extends BaseService
 
     public function get($userId, $courseId)
     {
-        $enrollment = $this->model->where("userId", $userId)->where("courseId", $courseId)->first();
+        $enrollment = $this->model->where("user_id", $userId)->where("course_id", $courseId)->first();
 
         if (!$enrollment) {
             throw new NotFoundError("User is not enrolled to this course");
@@ -58,7 +58,7 @@ class EnrollmentService extends BaseService
 
     public function getAll($userId)
     {
-        $enrollments = $this->model->where("userId", $userId)->findAll();
+        $enrollments = $this->model->where("user_id", $userId)->findAll();
 
         if (empty($enrollments)) {
             return [];
@@ -67,16 +67,16 @@ class EnrollmentService extends BaseService
         return $enrollments;
     }
 
-    public function edit($userId, $courseId)
-    {
-        $enrollment = $this->get($userId, $courseId);
+    // public function edit($userId, $courseId)
+    // {
+    //     $enrollment = $this->get($userId, $courseId);
 
-        $data = [
-            "isCompleted" => 1
-        ];
+    //     $data = [
+    //         "isCompleted" => 1
+    //     ];
 
-        $this->model->update($enrollment["id"], $data);
-    }
+    //     $this->model->update($enrollment["id"], $data);
+    // }
 
     public function delete($userId, $courseId)
     {

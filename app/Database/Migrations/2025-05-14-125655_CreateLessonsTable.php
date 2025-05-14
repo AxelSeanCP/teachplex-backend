@@ -4,28 +4,44 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class CreateCertificatesTable extends Migration
+class CreateLessonsTable extends Migration
 {
     public function up()
     {
         $this->forge->addField([
             "id" => [
                 "type" => "VARCHAR",
-                "constraint" => 50
-            ],
-            "user_id" => [
-                "type" => "VARCHAR",
                 "constraint" => 50,
-                "null" => false
             ],
             "course_id" => [
                 "type" => "VARCHAR",
                 "constraint" => 50,
-                "null" => false
             ],
-            "pdf_url" => [
+            "title" => [
                 "type" => "VARCHAR",
                 "constraint" => 255,
+            ],
+            "slug" => [
+                "type" => "VARCHAR",
+                "constraint" => 255,
+                "null" => false,
+                "unique" => true,
+            ],
+            'video_url' => [
+                'type' => 'TEXT',
+                'null' => true,
+            ],
+            'code_text' => [
+                'type' => 'TEXT',
+                'null' => true,
+            ],
+            "content" => [
+                "type" => "TEXT",
+            ],
+            "lesson_order" => [
+                "type" => "INT",
+                "null" => true,
+                "default" => 0,
             ],
             "created_at" => [
                 "type" => "DATETIME",
@@ -36,15 +52,13 @@ class CreateCertificatesTable extends Migration
         ]);
 
         $this->forge->addPrimaryKey("id");
-        $this->forge->addForeignKey("user_id", "users", "id", "CASCADE", "CASCADE");
         $this->forge->addForeignKey("course_id", "courses", "id", "CASCADE", "CASCADE");
-        $this->forge->addUniqueKey(["user_id", "course_id"]);
 
-        $this->forge->createTable("certificates");
+        $this->forge->createTable("lessons");
     }
 
     public function down()
     {
-        $this->forge->dropTable("certificates");
+        $this->forge->dropTable("lessons");
     }
 }
