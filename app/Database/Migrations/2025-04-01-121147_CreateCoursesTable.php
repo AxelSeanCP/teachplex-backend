@@ -49,6 +49,9 @@ class CreateCoursesTable extends Migration
                 "type" => "TEXT",
                 "null" => true,
             ],
+            "deleted_at" => [
+                "type" => "DATETIME",
+            ],
             "created_at" => [
                 "type" => "DATETIME",
             ],

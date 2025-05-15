@@ -57,6 +57,16 @@ class Validation extends BaseConfig
         "refreshToken" => "required|string"
     ];
 
+    public array $course = [
+        "title" => "required|string",
+        "description" => "required|string",
+        "thumbnail" => "if_exist|uploaded[thumbnail]|is_image[thumbnail]|mime_in[thumbnail,image/jpg,image/jpeg,image/png,image/webp]|max_size[thumbnail,2048]",
+        "duration" => "required|string",
+        "level" => "required|string|in_list[beginner,intermediate,advanced]",
+        "long_description" => "if_exist|string",
+        "topics.*" => "if_exist|string", 
+    ];
+
     public array $enroll = [
         "courseId" => "required|string"
     ];

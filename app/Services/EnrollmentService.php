@@ -56,9 +56,28 @@ class EnrollmentService extends BaseService
         return $enrollment;
     }
 
-    public function getAll($userId)
+    public function getMultiple($userId)
     {
         $enrollments = $this->model->where("user_id", $userId)->findAll();
+
+        if (empty($enrollments)) {
+            return [];
+        }
+
+        return $enrollments;
+    }
+
+    public function getAll($name = null)
+    {
+        $builder = $this->model->select("enrollments.*, users.name as user_name, courses.title as course_title")
+        ->join("users", "users.id = enrollments.user_id")
+        ->join("courses", "courses.id = enrollments.course_id");
+
+        if ($name) {
+            $builder->like("users.name", $name);
+        }
+
+        $enrollments = $builder->findAll();
 
         if (empty($enrollments)) {
             return [];
@@ -78,17 +97,8 @@ class EnrollmentService extends BaseService
     //     $this->model->update($enrollment["id"], $data);
     // }
 
-    public function delete($userId, $courseId)
+    public function delete($id)
     {
-        $this->model->where("userId", $userId)->where("courseId", $courseId)->delete();
-    }
-
-    public function verifyEnrollmentAccess($userId, $courseId)
-    {
-        $enrollment = $this->model->where("userId", $userId)->where("courseId", $courseId)->first();
-
-        if (!$enrollment) {
-            throw new ForbiddenError("You don't have access to this resource");
-        }
+        $this->model->delete($id);
     }
 }

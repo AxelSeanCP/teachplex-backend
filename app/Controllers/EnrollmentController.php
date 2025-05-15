@@ -34,7 +34,7 @@ class EnrollmentController extends BaseController
     public function index()
     {
         $userId = Services::userContext()->getUserId();
-        $enrollments = $this->service->getAll($userId);
+        $enrollments = $this->service->getMultiple($userId);
 
         return $this->respond([
             "status" => "success",
@@ -44,13 +44,23 @@ class EnrollmentController extends BaseController
         ]);
     }
 
-    public function destroy()
+    public function all()
     {
-        $courseId = validateRequest("enroll");
-        $userId = Services::userContext()->getUserId();
+        $name = $this->request->getGet("name");
 
-        $this->service->verifyEnrollmentAccess($userId, $courseId);
-        $this->service->delete($userId, $courseId);
+        $enrollments = $this->service->getAll($name);
+
+        return $this->respond([
+            "status" => "success",
+            "data" => [
+                "enrollments" => $enrollments
+            ]
+        ], 200);
+    }
+
+    public function destroy($id = null)
+    {
+        $this->service->delete($id);
 
         return $this->respond([
             "status" => "success",

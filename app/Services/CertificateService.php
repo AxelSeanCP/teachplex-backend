@@ -125,7 +125,7 @@ class CertificateService extends BaseService
     {
         $builder = $this->model
         ->select("certificates.*, users.name as user_name")
-        ->join("users", "users.id = certificates.userId");
+        ->join("users", "users.id = certificates.user_id");
 
         if ($name) {
             $builder->like("users.name", $name);

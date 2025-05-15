@@ -2,13 +2,13 @@
 
 namespace App\Filters;
 
+use App\Exceptions\ForbiddenError;
 use CodeIgniter\Filters\FilterInterface;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
-use App\Exceptions\UnauthorizedError;
 use Config\Services;
 
-class JWTAuth implements FilterInterface
+class IsAdmin implements FilterInterface
 {
     /**
      * Do whatever processing this filter needs to do.
@@ -27,29 +27,11 @@ class JWTAuth implements FilterInterface
      */
     public function before(RequestInterface $request, $arguments = null)
     {
-        helper("jwt_helper");
+        $role = Services::userContext()->getRole();
 
-        $header = $request->getHeaderLine("Authorization");
-        if (!$header) {
-            throw new UnauthorizedError("Missing access token");
+        if (!$role || $role !== "admin") {
+            throw new ForbiddenError("Only admin can access this resource");
         }
-
-        $token = explode(" ", $header)[1] ?? null;
-        $decoded = verifyToken($token, "ACCESS_TOKEN_KEY");
-
-        if (!$decoded) {
-            throw new UnauthorizedError("Invalid token");
-        }
-
-        // $request->userId = $decoded->sub; // throw undefined property in controller
-        Services::userContext()->setUserId($decoded->sub);
-
-        $userModel = new \App\Models\User();
-        $user = $userModel->where("id", $decoded->sub)->first();
-
-        Services::userContext()->setRole($user->role);
-
-        return;
     }
 
     /**

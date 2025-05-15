@@ -67,7 +67,7 @@ class UserService extends BaseService
     public function getAll()
     {
         $users = $this->model
-        ->select("id, name, email, created_at, updated_at")
+        ->select("id, name, email, role, created_at, updated_at")
         ->findAll();
 
         if (empty($users)) {
@@ -80,7 +80,7 @@ class UserService extends BaseService
     public function getById($id)
     {
         $user = $this->model
-        ->select("id, name, email, created_at, updated_at")
+        ->select("id, name, email, role, created_at, updated_at")
         ->find($id);
 
         if (!$user) {
