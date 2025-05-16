@@ -72,4 +72,68 @@ class CourseService extends BaseService
 
         return $courses;
     }
+
+    public function get($id)
+    {
+        $course = $this->model
+        ->select("id, title, description, duration, level, thumbnail, long_description, topics, created_at, updated_at")
+        ->find($id);
+
+        if (!$course) {
+            throw new NotFoundError("Course not found");
+        }
+
+        $course["topics"] = json_decode($course["topics"]);
+
+        return $course;
+    }
+
+    public function edit($id, $data)
+    {
+        $course = $this->get($id);
+
+        if (isset($data["thumbnail"])) {
+            if (!empty($course["thumbnail"])) {
+                $oldPath = $this->getLocalPathFromUrl($course["thumbnail"]);
+                if (file_exists($oldPath)) {
+                    unlink($oldPath);
+                }
+            }
+
+            $newName = "course_" . $data["thumbnail"]->getRandomName();
+            $data["thumbnail"]->move(FCPATH. "images/course_images", $newName);
+
+            $data["thumbnail"] = base_url('images/course_images/' . $newName);
+        } else {
+            unset($data["thumbnail"]);
+        }
+        
+        // $this->verifyCourse($data["title"]);
+
+        if (isset($data['topics']) && is_array($data['topics'])) {
+            $data['topics'] = json_encode($data['topics']);
+        }
+
+        $this->model->update($id, $data);
+    }
+
+    public function remove($id)
+    {
+        $course = $this->get($id);
+
+        if (!empty($course["thumbnail"])) {
+            $oldPath = $this->getLocalPathFromUrl($course["thumbnail"]);
+            if (file_exists($oldPath)) {
+                unlink($oldPath);
+            }
+        }
+        
+        $this->model->delete($id);
+    }
+
+    private function getLocalPathFromUrl(string $url): string
+    {
+        $relativePath = str_replace(base_url(), '', $url);
+        return FCPATH . ltrim($relativePath, '/');
+    }
 }

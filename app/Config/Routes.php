@@ -21,9 +21,9 @@ $routes->group("api", ["filter" => "cors"], function ($routes) {
     $routes->group("courses", function ($routes) {
         $routes->post("/", "CourseController::store", ["filter" => ["auth", "admin"]]);
         $routes->get("/", "CourseController::index");
-        // $routes->get("(:any)", "CourseController::image/$1");
+        $routes->get("(:segment)", "CourseController::show/$1");
         $routes->put("(:segment)", "CourseController::update/$1", ["filter" => ["auth", "admin"]]);
-        $routes->delete("(:segment)", "CourseController::delete/$1", ["filter" => ["auth", "admin"]]);
+        $routes->delete("(:segment)", "CourseController::destroy/$1", ["filter" => ["auth", "admin"]]);
     });
 
     $routes->group("enrollments", ["filter" => "auth"], function ($routes) {

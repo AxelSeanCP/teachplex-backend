@@ -15,8 +15,8 @@ class CourseController extends BaseController
 
     public function store()
     {
+        // make sure to use multipart/form-data in frontend
         $courseData = validateMultipartRequest("course");
-        log_message("debug", json_encode($courseData));
 
         $id = $this->service->add($courseData);
 
@@ -40,21 +40,37 @@ class CourseController extends BaseController
         ], 200);
     }
 
-    // public function image($filename)
-    // {
-    //     $filename = basename($filename);
+    public function show($id = null)
+    {
+        $course = $this->service->get($id);
 
-    //     $filePath = WRITEPATH . 'uploads/course_images/' . $filename;
-    //     log_message("debug", $filePath);
+        return $this->respond([
+            "status" => "success",
+            "data" => [
+                "course" => $course,
+            ]
+        ], 200);
+    }
 
-    //     if (!is_file($filePath)) {
-    //         return $this->response->setStatusCode(404)->setJSON([
-    //             "status" => "fail",
-    //             "message" => "Image not found"
-    //         ]);  
-    //     }
+    public function update($id = null)
+    {
+        $courseData = validateMultipartRequest("course");
 
-    //     $mimeType = mime_content_type($filePath);
-    //     return $this->response->setHeader("Content-Type", $mimeType)->setBody(file_get_contents($filePath));
-    // }
+        $this->service->edit($id, $courseData);
+
+        return $this->respond([
+            "status" => "success",
+            "message" => "Course updated successfully"
+        ], 200);
+    }
+
+    public function destroy($id = null)
+    {
+        $this->service->remove($id);
+
+        return $this->respond([
+            "status" => "success",
+            "message" => "Course deleted successfully"
+        ], 200);
+    }
 }
