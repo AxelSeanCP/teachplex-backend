@@ -1,14 +1,4 @@
-- ubah enrollments jadi untuk admin dan user
-    - admin bisa lihat semua enrollments
-    - admin bisa lihat semua enrollments milik satu user (query params nama user)
-    - admin bisa lihat detail enrollment milik satu user
-    - admin bisa delete enrollments dari enrollments id
-    - user bisa lihat semua enrollments khusus dia
-
-- courses
-    - hanya admin yang bisa tambah courses
-    - hanya admin yang bisa delete course
-    - user tidak perlu login untuk lihat courses
+- tambah test fail di postman untuk courses dan lessons
 
 - future update
     - add video url and code text feature in lessons

@@ -43,9 +43,9 @@ class LessonService extends BaseService
         return $id;
     }
 
-    public function get($courseId, $lessonId)
+    public function get($lessonId)
     {
-        $lesson = $this->model->where("course_id", $courseId)->where("id", $lessonId)
+        $lesson = $this->model->where("id", $lessonId)
         ->select("id, title, content") //add video url and code text in the future
         ->first();
 
@@ -54,5 +54,19 @@ class LessonService extends BaseService
         }
 
         return $lesson;
+    }
+
+    public function edit($lessonId, $lessonData)
+    {
+        $this->get($lessonId);
+
+        $this->model->update($lessonId, $lessonData);
+    }
+
+    public function remove($lessonId)
+    {
+        $this->get($lessonId);
+
+        $this->model->delete($lessonId);
     }
 }

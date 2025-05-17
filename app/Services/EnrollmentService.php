@@ -45,9 +45,9 @@ class EnrollmentService extends BaseService
         return $id;
     }
 
-    public function get($userId, $courseId)
+    public function get($id)
     {
-        $enrollment = $this->model->where("user_id", $userId)->where("course_id", $courseId)->first();
+        $enrollment = $this->model->where("id", $id)->first();
 
         if (!$enrollment) {
             throw new NotFoundError("User is not enrolled to this course");
@@ -99,6 +99,7 @@ class EnrollmentService extends BaseService
 
     public function delete($id)
     {
+        $this->get($id);
         $this->model->delete($id);
     }
 }
