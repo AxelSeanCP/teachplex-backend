@@ -89,8 +89,8 @@ class Services extends BaseService
         }
 
         $userService = static::userService();
-        $enrollmentService = static::enrollmentService();
+        $courseService = static::courseService();
 
-        return new certificateService(new Certificate(), $userService, $enrollmentService);
+        return new certificateService(new Certificate(), $userService, $courseService);
     }
 }

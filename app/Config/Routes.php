@@ -41,7 +41,7 @@ $routes->group("api", ["filter" => "cors"], function ($routes) {
     });
 
     $routes->group("certificates", function ($routes) {
-        $routes->post("templates/upload", "CertificateController::upload", ["filter" => "auth"]);
+        $routes->post("templates/upload", "CertificateController::upload", ["filter" => ["auth", "admin"]]);
         $routes->post("/", "CertificateController::store", ["filter" => "auth"]);
         $routes->get("download/(:any)", "CertificateController::download/$1");
         $routes->get("/", "CertificateController::index");

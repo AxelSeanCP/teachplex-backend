@@ -12,7 +12,7 @@ class Certificate extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ["id", "user_id", "course_id", "pdfUrl"];
+    protected $allowedFields    = ["id", "user_id", "course_id", "pdf_url"];
 
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;

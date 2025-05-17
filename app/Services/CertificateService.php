@@ -13,13 +13,13 @@ class CertificateService extends BaseService
 {
     protected $model;
     protected $userService;
-    protected $enrollmentService;
+    protected $courseService;
 
-    public function __construct(Certificate $certificateModel, UserService $userService, EnrollmentService $enrollmentService)
+    public function __construct(Certificate $certificateModel, UserService $userService, CourseService $courseService)
     {
         $this->model = $certificateModel;
         $this->userService = $userService;
-        $this->enrollmentService = $enrollmentService;
+        $this->courseService = $courseService;
     }
 
     public function checkCertificateExists($userId, $courseId)
@@ -31,15 +31,18 @@ class CertificateService extends BaseService
         }
     }
 
-    public function generate($userId, $courseId, $courseName)
+    public function generate($userId, $courseId)
     {
         $this->checkCertificateExists($userId, $courseId);
+        // add check if lesson and course progress is completed
 
         $user = $this->userService->getById($userId);
-        $this->enrollmentService->get($userId, $courseId);
+        $course = $this->courseService->get($courseId);
+        log_message("debug", json_encode($course));
 
         $id = $this->generateId("certificate");
 
+        // change this to use template in file
         $defaultTemplate = "blue_mountain.jpg";
         $templatePath = FCPATH . "uploads/certificate_templates/" . $defaultTemplate;
 
@@ -47,7 +50,7 @@ class CertificateService extends BaseService
 
         $html = view("certificates/template", [
             "user" => $user,
-            "courseName" => $courseName,
+            "courseName" => $course["title"],
             'date' => date('F j, Y'),
             "certificateId" => $id,
             "templateFile" => $templateFile
@@ -111,7 +114,7 @@ class CertificateService extends BaseService
     {
         $certificate = $this->model
         ->select("certificates.*, users.name as user_name")
-        ->join("users", "users.id = certificates.userId")
+        ->join("users", "users.id = certificates.user_id")
         ->find($id);
 
         if (!$certificate) {

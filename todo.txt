@@ -1,4 +1,7 @@
 - tambah test fail di postman untuk courses dan lessons
+- update readme.md
+
+- check lesson progress and course progress is completed when generating certificate
 
 - future update
     - add video url and code text feature in lessons

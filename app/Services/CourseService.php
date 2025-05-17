@@ -80,13 +80,15 @@ class CourseService extends BaseService
     {
         $course = $this->model
         ->select("id, title, description, duration, level, thumbnail, long_description, topics, created_at, updated_at")
-        ->find($id);
+        ->first($id);
 
         if (!$course) {
             throw new NotFoundError("Course not found");
         }
 
-        $course["topics"] = json_decode($course["topics"]);
+        if (isset($course["topics"]) && !is_null($course["topics"])) {
+            $course["topics"] = json_decode($course["topics"]);
+        }
 
         $lessons = $this->lessonModel
         ->where("course_id", $id)

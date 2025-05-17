@@ -16,10 +16,10 @@ class CertificateController extends BaseController
 
    public function store()
    {
-        $certificateData = validateRequest("certificate");
+        $courseId = validateRequest("certificate");
         $userId = Services::userContext()->getUserId();
 
-        $result = $this->service->generate($userId, $certificateData["courseId"]);
+        $result = $this->service->generate($userId, $courseId);
 
         $downloadLink = $result["downloadLink"];
         $certificateId = $result["id"];
