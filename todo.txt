@@ -9,3 +9,6 @@
     - hanya admin yang bisa tambah courses
     - hanya admin yang bisa delete course
     - user tidak perlu login untuk lihat courses
+
+- future update
+    - add video url and code text feature in lessons

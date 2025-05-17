@@ -67,6 +67,11 @@ class Validation extends BaseConfig
         "topics.*" => "if_exist|string", 
     ];
 
+    public array $lesson = [
+        "title" => "required|string",
+        "content" => "required|string",
+    ];
+
     public array $enroll = [
         "courseId" => "required|string"
     ];

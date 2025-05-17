@@ -26,13 +26,16 @@ class CreateCourseProgress extends Migration
                 "default" => false,
             ],
             "completed_at" => [
-                "type" => "DATETIME"
+                "type" => "DATETIME",
+                "null" => true
             ],
             "created_at" => [
-                "type" => "DATETIME"
+                "type" => "DATETIME",
+                "null" => true
             ],
             "updated_at" => [
-                "type" => "DATETIME"
+                "type" => "DATETIME",
+                "null" => true
             ],
         ]);
 

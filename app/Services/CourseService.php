@@ -5,14 +5,17 @@ namespace App\Services;
 use App\Exceptions\BadRequestError;
 use App\Exceptions\NotFoundError;
 use App\Models\Course;
+use App\Models\Lesson;
 
 class CourseService extends BaseService
 {
     protected $model;
+    protected $lessonModel;
 
-    public function __construct(Course $courseModel)
+    public function __construct(Course $courseModel, Lesson $lessonModel)
     {
         $this->model = $courseModel;
+        $this->lessonModel = $lessonModel;
     }
 
     public function verifyCourse($title)
@@ -84,6 +87,14 @@ class CourseService extends BaseService
         }
 
         $course["topics"] = json_decode($course["topics"]);
+
+        $lessons = $this->lessonModel
+        ->where("course_id", $id)
+        ->orderBy("lesson_order", "ASC")
+        ->select("id, title")
+        ->findAll();
+
+        $course["lessons"] = $lessons ?? [];
 
         return $course;
     }
