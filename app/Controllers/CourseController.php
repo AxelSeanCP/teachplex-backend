@@ -3,14 +3,17 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use Config\Services;
 
 class CourseController extends BaseController
 {
     protected $service;
+    protected $lessonService;
 
     public function __construct()
     {
         $this->service = service("courseService");
+        $this->lessonService = service("lessonService");
     }
 
     public function store()
@@ -72,5 +75,14 @@ class CourseController extends BaseController
             "status" => "success",
             "message" => "Course deleted successfully"
         ], 200);
+    }
+
+    public function finish($id = null)
+    {
+        $userId = Services::userContext()->getUserId();
+
+        // check if all lesson is complete under this courseId and userId
+        $this->lessonService->checkAllLessonComplete($userId, $id);
+        $this->service->completeCourse($userId, $id);
     }
 }

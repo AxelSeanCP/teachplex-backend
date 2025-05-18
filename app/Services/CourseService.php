@@ -6,16 +6,19 @@ use App\Exceptions\BadRequestError;
 use App\Exceptions\NotFoundError;
 use App\Models\Course;
 use App\Models\Lesson;
+use App\Models\CourseProgress;
 
 class CourseService extends BaseService
 {
     protected $model;
     protected $lessonModel;
+    protected $courseProgressModel;
 
-    public function __construct(Course $courseModel, Lesson $lessonModel)
+    public function __construct(Course $courseModel, Lesson $lessonModel, CourseProgress $courseProgressModel)
     {
         $this->model = $courseModel;
         $this->lessonModel = $lessonModel;
+        $this->courseProgressModel = $courseProgressModel;
     }
 
     public function verifyCourse($title)
@@ -142,6 +145,28 @@ class CourseService extends BaseService
         }
         
         $this->model->delete($id);
+    }
+
+    public function completeCourse($userId, $id)
+    {
+        $data = [
+            "id" => $this->generateId("course_progress"),
+            "user_id" => $userId,
+            "course_id" => $id,
+            "is_completed" => true,
+            "completed_at" => date("Y-m-d H:i:s")
+        ];
+
+        $existing = $this->courseProgressModel
+        ->where("user_id", $userId)
+        ->where("course_id", $id)
+        ->first();
+
+        if ($existing) {
+            $this->courseProgressModel->update($existing["id"], $data);
+        } else {
+            $this->courseProgressModel->insert($data);
+        }
     }
 
     private function getLocalPathFromUrl(string $url): string

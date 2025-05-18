@@ -24,6 +24,7 @@ $routes->group("api", ["filter" => "cors"], function ($routes) {
         $routes->get("(:segment)", "CourseController::show/$1");
         $routes->put("(:segment)", "CourseController::update/$1", ["filter" => ["auth", "admin"]]);
         $routes->delete("(:segment)", "CourseController::destroy/$1", ["filter" => ["auth", "admin"]]);
+        $routes->post("(:segment)", "CourseController::finish/$1", ["filter" => "auth"]);
 
         $routes->group("(:segment)/lessons", function ($routes) {
             $routes->post("/", "LessonController::store/$1", ["filter" => ["auth", "admin"]]);

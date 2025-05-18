@@ -1,5 +1,14 @@
-- tambah test fail di postman untuk courses dan lessons
+- add fail test in postman for courses and lessons
 - update readme.md
+
+- lesson
+    - prevent user to view lessons when previous lesson is not completed yet
+
+- lesson progress 
+    - add is completed when user view a lesson 
+
+- course progress
+    - build endpoint to finish course and check if all related lesson is completed
 
 - check lesson progress and course progress is completed when generating certificate
 

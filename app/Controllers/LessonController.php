@@ -3,7 +3,7 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
-use CodeIgniter\HTTP\ResponseInterface;
+use Config\Services;
 
 class LessonController extends BaseController
 {
@@ -32,7 +32,9 @@ class LessonController extends BaseController
 
     public function show($courseId = null, $lessonId = null)
     {
-        $lesson = $this->service->get($lessonId);
+        $userId = Services::userContext()->getUserId();
+        $lesson = $this->service->get($userId, $courseId, $lessonId);
+        $this->service->completeLesson($userId, $lessonId);
 
         return $this->respond([
             "status" => "success",
