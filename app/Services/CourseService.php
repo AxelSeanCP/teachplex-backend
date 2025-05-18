@@ -169,6 +169,17 @@ class CourseService extends BaseService
         }
     }
 
+    public function checkCourseComplete($userId, $courseId)
+    {
+        $completed = $this->courseProgressModel
+        ->where("user_id", $userId)
+        ->where("course_id", $courseId)
+        ->where("is_completed", true)
+        ->first();
+
+        return (bool) $completed;
+    }
+
     private function getLocalPathFromUrl(string $url): string
     {
         $relativePath = str_replace(base_url(), '', $url);

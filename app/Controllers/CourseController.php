@@ -84,5 +84,10 @@ class CourseController extends BaseController
         // check if all lesson is complete under this courseId and userId
         $this->lessonService->checkAllLessonComplete($userId, $id);
         $this->service->completeCourse($userId, $id);
+
+        return $this->respond([
+            "status" => "success",
+            "message" => "Course completed",
+        ], 200);
     }
 }

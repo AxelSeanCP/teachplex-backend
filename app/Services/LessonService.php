@@ -50,7 +50,7 @@ class LessonService extends BaseService
     public function get($userId, $courseId, $lessonId)
     {
         $lesson = $this->model->where("id", $lessonId)
-        ->select("id, title, content") //add video url and code text in the future
+        ->select("id, title, slug, content, lesson_order") //add video url and code text in the future
         ->first();
 
         if (empty($lesson)) {

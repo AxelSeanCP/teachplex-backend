@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Exceptions\BadRequestError;
 use App\Exceptions\NotFoundError;
+use App\Exceptions\ForbiddenError;
 use App\Services\UserService;
 use App\Models\Certificate;
 use Dompdf\Dompdf;
@@ -34,11 +35,13 @@ class CertificateService extends BaseService
     public function generate($userId, $courseId)
     {
         $this->checkCertificateExists($userId, $courseId);
-        // add check if lesson and course progress is completed
+
+        if (!$this->courseService->checkCourseComplete($userId, $courseId)) {
+            throw new ForbiddenError("You must complete the course before generating a certificate.");
+        }
 
         $user = $this->userService->getById($userId);
         $course = $this->courseService->get($courseId);
-        log_message("debug", json_encode($course));
 
         $id = $this->generateId("certificate");
 
