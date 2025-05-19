@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Exceptions\BadRequestError;
 use App\Exceptions\NotFoundError;
+use App\Exceptions\ForbiddenError;
 use App\Services\UserService;
 use App\Models\Certificate;
 use Dompdf\Dompdf;
@@ -13,33 +14,38 @@ class CertificateService extends BaseService
 {
     protected $model;
     protected $userService;
-    protected $enrollmentService;
+    protected $courseService;
 
-    public function __construct(Certificate $certificateModel, UserService $userService, EnrollmentService $enrollmentService)
+    public function __construct(Certificate $certificateModel, UserService $userService, CourseService $courseService)
     {
         $this->model = $certificateModel;
         $this->userService = $userService;
-        $this->enrollmentService = $enrollmentService;
+        $this->courseService = $courseService;
     }
 
     public function checkCertificateExists($userId, $courseId)
     {
-        $certificate = $this->model->where("userId", $userId)->where("courseId", $courseId)->first();
+        $certificate = $this->model->where("user_id", $userId)->where("course_id", $courseId)->first();
         
         if ($certificate) {
             throw new BadRequestError("User already have this certificate");
         }
     }
 
-    public function generate($userId, $courseId, $courseName)
+    public function generate($userId, $courseId)
     {
         $this->checkCertificateExists($userId, $courseId);
 
+        if (!$this->courseService->checkCourseComplete($userId, $courseId)) {
+            throw new ForbiddenError("You must complete the course before generating a certificate.");
+        }
+
         $user = $this->userService->getById($userId);
-        $this->enrollmentService->get($userId, $courseId);
+        $course = $this->courseService->get($courseId);
 
         $id = $this->generateId("certificate");
 
+        // change this to use template in file
         $defaultTemplate = "blue_mountain.jpg";
         $templatePath = FCPATH . "uploads/certificate_templates/" . $defaultTemplate;
 
@@ -47,7 +53,7 @@ class CertificateService extends BaseService
 
         $html = view("certificates/template", [
             "user" => $user,
-            "courseName" => $courseName,
+            "courseName" => $course["title"],
             'date' => date('F j, Y'),
             "certificateId" => $id,
             "templateFile" => $templateFile
@@ -71,16 +77,13 @@ class CertificateService extends BaseService
         }
 
         file_put_contents($filepath, $output);
-        
-        $this->enrollmentService->edit($userId, $courseId);
 
         $downloadLink = base_url("api/certificates/download/" . $filename);
         $data = [
             "id" => $id,
-            "userId" => $userId,
-            "courseId" => $courseId,
-            "courseName" => $courseName,
-            "pdfUrl" => $downloadLink
+            "user_id" => $userId,
+            "course_id" => $courseId,
+            "pdf_url" => $downloadLink
         ];
 
         $this->model->insert($data);
@@ -114,7 +117,7 @@ class CertificateService extends BaseService
     {
         $certificate = $this->model
         ->select("certificates.*, users.name as user_name")
-        ->join("users", "users.id = certificates.userId")
+        ->join("users", "users.id = certificates.user_id")
         ->find($id);
 
         if (!$certificate) {
@@ -128,7 +131,7 @@ class CertificateService extends BaseService
     {
         $builder = $this->model
         ->select("certificates.*, users.name as user_name")
-        ->join("users", "users.id = certificates.userId");
+        ->join("users", "users.id = certificates.user_id");
 
         if ($name) {
             $builder->like("users.name", $name);

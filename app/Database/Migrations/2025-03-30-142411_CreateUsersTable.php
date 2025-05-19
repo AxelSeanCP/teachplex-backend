@@ -26,13 +26,18 @@ class CreateUsersTable extends Migration
                 "constraint" => "255",
                 "unique" => true
             ],
+            "role" => [
+                "type" => "ENUM",
+                "constraint" => ["admin", "user"],
+                "default" => "user",
+            ],
             "created_at" => [
                 "type" => "DATETIME",
-                "null" => "true"
+                "null" => true
             ],
             "updated_at" => [
                 "type" => "DATETIME",
-                "null" => "true"
+                "null" => true
             ]
         ]);
 

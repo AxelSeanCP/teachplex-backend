@@ -19,8 +19,8 @@ class EnrollmentService extends BaseService
     public function verifyEnrollment($userId, $courseId) 
     {
         $enrollment = $this->model
-        ->where("userId", $userId)
-        ->where("courseId", $courseId)
+        ->where("user_id", $userId)
+        ->where("course_id", $courseId)
         ->first();
         
         if ($enrollment) {
@@ -36,8 +36,8 @@ class EnrollmentService extends BaseService
 
         $data = [
             "id" => $id,
-            "userId" => $userId,
-            "courseId" => $courseId,
+            "user_id" => $userId,
+            "course_id" => $courseId,
         ];
 
         $this->model->insert($data);
@@ -45,9 +45,9 @@ class EnrollmentService extends BaseService
         return $id;
     }
 
-    public function get($userId, $courseId)
+    public function get($id)
     {
-        $enrollment = $this->model->where("userId", $userId)->where("courseId", $courseId)->first();
+        $enrollment = $this->model->where("id", $id)->first();
 
         if (!$enrollment) {
             throw new NotFoundError("User is not enrolled to this course");
@@ -56,9 +56,9 @@ class EnrollmentService extends BaseService
         return $enrollment;
     }
 
-    public function getAll($userId)
+    public function getMultiple($userId)
     {
-        $enrollments = $this->model->where("userId", $userId)->findAll();
+        $enrollments = $this->model->where("user_id", $userId)->findAll();
 
         if (empty($enrollments)) {
             return [];
@@ -67,28 +67,39 @@ class EnrollmentService extends BaseService
         return $enrollments;
     }
 
-    public function edit($userId, $courseId)
+    public function getAll($name = null)
     {
-        $enrollment = $this->get($userId, $courseId);
+        $builder = $this->model->select("enrollments.*, users.name as user_name, courses.title as course_title")
+        ->join("users", "users.id = enrollments.user_id")
+        ->join("courses", "courses.id = enrollments.course_id");
 
-        $data = [
-            "isCompleted" => 1
-        ];
-
-        $this->model->update($enrollment["id"], $data);
-    }
-
-    public function delete($userId, $courseId)
-    {
-        $this->model->where("userId", $userId)->where("courseId", $courseId)->delete();
-    }
-
-    public function verifyEnrollmentAccess($userId, $courseId)
-    {
-        $enrollment = $this->model->where("userId", $userId)->where("courseId", $courseId)->first();
-
-        if (!$enrollment) {
-            throw new ForbiddenError("You don't have access to this resource");
+        if ($name) {
+            $builder->like("users.name", $name);
         }
+
+        $enrollments = $builder->findAll();
+
+        if (empty($enrollments)) {
+            return [];
+        }
+
+        return $enrollments;
+    }
+
+    // public function edit($userId, $courseId)
+    // {
+    //     $enrollment = $this->get($userId, $courseId);
+
+    //     $data = [
+    //         "isCompleted" => 1
+    //     ];
+
+    //     $this->model->update($enrollment["id"], $data);
+    // }
+
+    public function delete($id)
+    {
+        $this->get($id);
+        $this->model->delete($id);
     }
 }
