@@ -98,6 +98,7 @@ class CourseService extends BaseService
         ->orderBy("lesson_order", "ASC")
         ->select("id, title")
         ->findAll();
+        log_message("debug", $id);
 
         $course["lessons"] = $lessons ?? [];
 
@@ -145,6 +146,11 @@ class CourseService extends BaseService
         }
         
         $this->model->delete($id);
+
+        $lessons = $this->lessonModel->where('course_id', $id)->findAll();
+        foreach ($lessons as $lesson) {
+            $this->lessonModel->delete($lesson['id']);
+        }
     }
 
     public function completeCourse($userId, $id)

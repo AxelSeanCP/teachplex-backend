@@ -22,7 +22,6 @@ class CreateCoursesTable extends Migration
                 "type" => "VARCHAR",
                 "constraint" => 255,
                 "null" => false,
-                "unique" => true,
             ],
             "description" => [
                 "type" => "VARCHAR",

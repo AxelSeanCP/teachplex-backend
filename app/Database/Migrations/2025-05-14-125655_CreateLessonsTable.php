@@ -25,7 +25,6 @@ class CreateLessonsTable extends Migration
                 "type" => "VARCHAR",
                 "constraint" => 255,
                 "null" => false,
-                "unique" => true,
             ],
             'video_url' => [
                 'type' => 'TEXT',
@@ -42,6 +41,10 @@ class CreateLessonsTable extends Migration
                 "type" => "INT",
                 "null" => true,
                 "default" => 0,
+            ],
+            "deleted_at" => [
+                "type" => "DATETIME",
+                "null" => true
             ],
             "created_at" => [
                 "type" => "DATETIME",

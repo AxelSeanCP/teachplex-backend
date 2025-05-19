@@ -10,7 +10,7 @@ class Lesson extends Model
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
-    protected $useSoftDeletes   = false;
+    protected $useSoftDeletes   = true;
     protected $protectFields    = true;
     protected $allowedFields    = ["id", "course_id", "title", "slug", "video_url", "code_text", "content", "lesson_order"];
 
