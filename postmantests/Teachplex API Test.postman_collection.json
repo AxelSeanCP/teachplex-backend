@@ -68,6 +68,7 @@
 									"}\r",
 									"\r",
 									"const currentBadUserPayload = badUserPayloads.shift();\r",
+									"console.log(currentBadUserPayload);\r",
 									"pm.environment.set('currentBadUserPayload', JSON.stringify(currentBadUserPayload));\r",
 									"pm.environment.set('badUserPayloads', badUserPayloads);"
 								],
@@ -1503,110 +1504,6 @@
 					"response": []
 				},
 				{
-					"name": "(Admin) Add Course with Invalid Payload",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"let badCoursePayloads = pm.environment.get('badCoursePayloads');\r",
-									"\r",
-									"if (!badCoursePayloads | badCoursePayloads.length === 0) {\r",
-									"    badCoursePayloads = [\r",
-									"        {},\r",
-									"        { title: 1 },\r",
-									"        { title: 'Belajar PHP' },\r",
-									"        { title: 'Belajar PHP', description: true },\r",
-									"        { title: 'Belajar PHP', description: 'kursus belajar php' },\r",
-									"        { title: 'Belajar PHP', description: 'kursus belajar php', duration: 0 },\r",
-									"        { title: 'Belajar PHP', description: 'kursus belajar php', duration: \"12 hours\" },\r",
-									"        { title: 'Belajar PHP', description: 'kursus belajar php', duration: \"12 hours\", level: false },\r",
-									"    ];\r",
-									"}\r",
-									"\r",
-									"const currentBadCoursePayload = badCoursePayloads.shift();\r",
-									"pm.environment.set('currentBadCoursePayload', JSON.stringify(currentBadCoursePayload));\r",
-									"pm.environment.set('badCoursePayloads', badCoursePayloads);"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						},
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test('it should response 400 status code', () => {\r",
-									"    pm.expect(pm.response).to.have.status(400);\r",
-									"});\r",
-									"\r",
-									"pm.test('response Content-Type header should have application/json value', () => {\r",
-									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');\r",
-									"}); \r",
-									"\r",
-									"pm.test('response body should an object', () => {\r",
-									"    const responseJson = pm.response.json();\r",
-									"    pm.expect(responseJson).to.be.an('object');\r",
-									"});\r",
-									"\r",
-									"pm.test('response body have correct property and value', () => {\r",
-									"    const responseJson = pm.response.json();\r",
-									"\r",
-									"    pm.expect(responseJson.status).to.equal('fail');\r",
-									"    pm.expect(responseJson.message).to.be.a('string');\r",
-									"})\r",
-									"\r",
-									"const repeatRequestUntilDatasetEmpty = () => {\r",
-									"    const badCoursePayloads = pm.environment.get('badCoursePayloads');\r",
-									" \r",
-									"    if(badCoursePayloads && badCoursePayloads.length > 0) {\r",
-									"        pm.execution.setNextRequest(\"(Admin) Add Course with Invalid Payload\");\r",
-									"    }\r",
-									"}\r",
-									" \r",
-									"repeatRequestUntilDatasetEmpty();"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessTokenAdmin}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{{currentBadCoursePayload}}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{weburl}}/api/courses",
-							"host": [
-								"{{weburl}}"
-							],
-							"path": [
-								"api",
-								"courses"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "(Admin) Add Course with Invalid Thumbnail",
 					"event": [
 						{
@@ -1872,7 +1769,115 @@
 								{
 									"key": "thumbnail",
 									"type": "file",
-									"src": "melt_chibi.jpg"
+									"src": "picture-small.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{weburl}}/api/courses",
+							"host": [
+								"{{weburl}}"
+							],
+							"path": [
+								"api",
+								"courses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "(Admin) Add Course with Taken Course Title",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('it should response 400 status code', () => {\r",
+									"    pm.expect(pm.response).to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test('response Content-Type header should have application/json value', () => {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');\r",
+									"}); \r",
+									"\r",
+									"pm.test('response body should an object', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"});\r",
+									"\r",
+									"pm.test('response body have correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson.status).to.equal('fail');\r",
+									"    pm.expect(responseJson.message).to.be.a('string');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessTokenAdmin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Belajar Laravel",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Kursus untuk belajar membuat website menggunakan laravel untuk pemula",
+									"type": "text"
+								},
+								{
+									"key": "duration",
+									"value": "12 hours",
+									"type": "text"
+								},
+								{
+									"key": "level",
+									"value": "beginner",
+									"type": "text"
+								},
+								{
+									"key": "long_description",
+									"value": "Laravel sering digunakan dalam dunia industri khususnya pengembangan website oleh karena itu mempelajari laravel merupakan salah satu investasi yang baik untuk diri sendiri.",
+									"type": "text"
+								},
+								{
+									"key": "topics[]",
+									"value": "Memahami routes",
+									"type": "text"
+								},
+								{
+									"key": "topics[]",
+									"value": "Memahami controller",
+									"type": "text"
+								},
+								{
+									"key": "topics[]",
+									"value": "Memahami views",
+									"type": "text"
+								},
+								{
+									"key": "thumbnail",
+									"type": "file",
+									"src": "picture-small.jpg"
 								}
 							]
 						},
@@ -2153,6 +2158,120 @@
 					"response": []
 				},
 				{
+					"name": "(Admin) Edit Course with Invalid Thumbnail",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('it should response 400 status code', () => {\r",
+									"    pm.expect(pm.response).to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test('response Content-Type header should have application/json value', () => {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');\r",
+									"}); \r",
+									"\r",
+									"pm.test('response body should an object', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"});\r",
+									"\r",
+									"pm.test('response body should have correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseJson.status).to.equal('fail');\r",
+									"    pm.expect(responseJson.message).to.be.a('string');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessTokenAdmin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "_method",
+									"value": "PUT",
+									"type": "text"
+								},
+								{
+									"key": "title",
+									"value": "Belajar Laravel untuk Pemula",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Kursus untuk belajar membuat website menggunakan laravel untuk pemula",
+									"type": "text"
+								},
+								{
+									"key": "duration",
+									"value": "11 hours",
+									"type": "text"
+								},
+								{
+									"key": "level",
+									"value": "beginner",
+									"type": "text"
+								},
+								{
+									"key": "long_description",
+									"value": "Laravel sering digunakan dalam dunia industri khususnya pengembangan website oleh karena itu mempelajari laravel merupakan salah satu investasi yang baik untuk diri sendiri.",
+									"type": "text"
+								},
+								{
+									"key": "topics[]",
+									"value": "Memahami controller",
+									"type": "text"
+								},
+								{
+									"key": "topics[]",
+									"value": "Memahami routes",
+									"type": "text"
+								},
+								{
+									"key": "topics[]",
+									"value": "Memahami database",
+									"type": "text"
+								},
+								{
+									"key": "thumbnail",
+									"type": "file",
+									"src": "text-small.txt"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{weburl}}/api/courses/{{courseId}}",
+							"host": [
+								"{{weburl}}"
+							],
+							"path": [
+								"api",
+								"courses",
+								"{{courseId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "(Admin) Edit Course with Valid Id",
 					"event": [
 						{
@@ -2283,6 +2402,57 @@
 				},
 				{
 					"name": "(Admin) Edit Course with New Thumbnail",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('it should response 200 status code', () => {\r",
+									"    pm.expect(pm.response).to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test('response Content-Type header should have application/json value', () => {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');\r",
+									"}); \r",
+									"\r",
+									"pm.test('response body should an object', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"});\r",
+									"\r",
+									"pm.test('response body should have correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseJson.status).to.equal('success');\r",
+									"    pm.expect(responseJson.message).to.be.a('string');\r",
+									"});\r",
+									"\r",
+									"pm.test('when GET detail course', () => {\r",
+									"    const courseId = pm.environment.get('courseId');\r",
+									"    pm.sendRequest(`http://teachplex-backend.test/api/courses/${courseId}`, (error, response) => {\r",
+									"        if (!error) {\r",
+									"            pm.test('it should response with revised content', () => {\r",
+									"                pm.expect(response.code).to.equal(200);\r",
+									"\r",
+									"                const responseJson = response.json();\r",
+									"\r",
+									"                pm.expect(responseJson.status).to.equal('success');\r",
+									"                pm.expect(responseJson.data.course).to.be.an('object');\r",
+									"                pm.expect(responseJson.data.course.id).to.equal(courseId);\r",
+									"                pm.expect(responseJson.data.course.title).to.equal('Belajar Laravel untuk Pemula');\r",
+									"                pm.expect(responseJson.data.course.duration).to.equal(\"11 hours\");\r",
+									"                pm.expect(responseJson.data.course.thumbnail).to.be.a(\"string\");\r",
+									"            });\r",
+									"        }\r",
+									"    });\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -2390,7 +2560,18 @@
 									"\r",
 									"    pm.expect(responseJson.status).to.equal('success');\r",
 									"    pm.expect(responseJson.message).to.be.a('string');\r",
-									"})"
+									"});\r",
+									"\r",
+									"pm.test('when GET detail course', () => {\r",
+									"    const courseId = pm.environment.get('courseId');\r",
+									"    pm.sendRequest(`http://teachplex-backend.test/api/courses/${courseId}`, (error, response) => {\r",
+									"        if (!error) {\r",
+									"            pm.test('it should response with not found', () => {\r",
+									"                pm.expect(response.code).to.equal(404);\r",
+									"            });\r",
+									"        }\r",
+									"    });\r",
+									"});"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -2818,6 +2999,7 @@
 									"}\r",
 									"\r",
 									"const currentBadLessonPayload = badLessonPayloads.shift();\r",
+									"console.log(currentBadLessonPayload);\r",
 									"pm.environment.set('currentBadLessonPayload', JSON.stringify(currentBadLessonPayload));\r",
 									"pm.environment.set('badLessonPayloads', badLessonPayloads);"
 								],
@@ -3059,6 +3241,67 @@
 					"response": []
 				},
 				{
+					"name": "(John) Get a Lesson with Invalid Id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('it should response 404 status code', () => {\r",
+									"    pm.expect(pm.response).to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test('response Content-Type header should have application/json value', () => {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');\r",
+									"}); \r",
+									"\r",
+									"pm.test('response body should an object', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"});\r",
+									"\r",
+									"pm.test('response body have correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson.status).to.equal('fail');\r",
+									"    pm.expect(responseJson.message).to.be.a('string');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessTokenJohn}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{weburl}}/api/courses/{{courseId}}/lessons/{{lessonId}}",
+							"host": [
+								"{{weburl}}"
+							],
+							"path": [
+								"api",
+								"courses",
+								"{{courseId}}",
+								"lessons",
+								"{{lessonId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "(John) Get a Lesson with Valid Id",
 					"event": [
 						{
@@ -3106,6 +3349,178 @@
 						},
 						"method": "GET",
 						"header": [],
+						"url": {
+							"raw": "{{weburl}}/api/courses/{{courseId}}/lessons/{{lessonId}}",
+							"host": [
+								"{{weburl}}"
+							],
+							"path": [
+								"api",
+								"courses",
+								"{{courseId}}",
+								"lessons",
+								"{{lessonId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "(Admin) Edit Lesson with Invalid Id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('it should response 404 status code', () => {\r",
+									"    pm.expect(pm.response).to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test('response Content-Type header should have application/json value', () => {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');\r",
+									"}); \r",
+									"\r",
+									"pm.test('response body should an object', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"});\r",
+									"\r",
+									"pm.test('response body have correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson.status).to.equal('fail');\r",
+									"    pm.expect(responseJson.message).to.be.a('string');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessTokenAdmin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Introduction to Laravel\",\r\n    \"content\": \"Di kursus ini kita akan belajar bagaimana cara membuat website dengan laravel. Hal pertama yang harus kita lakukan adalah download laragon\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{weburl}}/api/courses/{{courseId}}/lessons/xxx",
+							"host": [
+								"{{weburl}}"
+							],
+							"path": [
+								"api",
+								"courses",
+								"{{courseId}}",
+								"lessons",
+								"xxx"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "(Admin) Edit Lesson with Invalid Payload",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('it should response 400 status code', () => {\r",
+									"    pm.expect(pm.response).to.have.status(400);\r",
+									"});\r",
+									"\r",
+									"pm.test('response Content-Type header should have application/json value', () => {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');\r",
+									"}); \r",
+									"\r",
+									"pm.test('response body should an object', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"});\r",
+									"\r",
+									"pm.test('response body have correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson.status).to.equal('fail');\r",
+									"    pm.expect(responseJson.message).to.be.a('string');\r",
+									"});\r",
+									"\r",
+									"const repeatRequestUntilDatasetEmpty = () => {\r",
+									"    const badLessonPayloads = pm.environment.get(\"badLessonPayloads\");\r",
+									"\r",
+									"    if(badLessonPayloads && badLessonPayloads.length > 0) {\r",
+									"        pm.execution.setNextRequest(\"(Admin) Add Lesson with Invalid Payload\");\r",
+									"    }\r",
+									"};"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"let badLessonPayloads = pm.environment.get('badLessonPayloads');\r",
+									"\r",
+									"if (!badLessonPayloads | badLessonPayloads.length === 0) {\r",
+									"    badLessonPayloads = [\r",
+									"        {},\r",
+									"        { title: 1 },\r",
+									"        { title: 'Belajar PHP' },\r",
+									"        { title: 'Belajar PHP', content: true },\r",
+									"    ];\r",
+									"}\r",
+									"\r",
+									"const currentBadLessonPayload = badLessonPayloads.shift();\r",
+									"console.log(currentBadLessonPayload);\r",
+									"pm.environment.set('currentBadLessonPayload', JSON.stringify(currentBadLessonPayload));\r",
+									"pm.environment.set('badLessonPayloads', badLessonPayloads);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessTokenAdmin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{{currentBadLessonPayload}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "{{weburl}}/api/courses/{{courseId}}/lessons/{{lessonId}}",
 							"host": [
@@ -3216,6 +3631,67 @@
 								"{{courseId}}",
 								"lessons",
 								"{{lessonId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "(Admin) Delete Lesson with Invalid Id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('it should response 404 status code', () => {\r",
+									"    pm.expect(pm.response).to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test('response Content-Type header should have application/json value', () => {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');\r",
+									"}); \r",
+									"\r",
+									"pm.test('response body should an object', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"});\r",
+									"\r",
+									"pm.test('response body have correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson.status).to.equal('fail');\r",
+									"    pm.expect(responseJson.message).to.be.a('string');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessTokenAdmin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{weburl}}/api/courses/{{courseId}}/lessons/xxx",
+							"host": [
+								"{{weburl}}"
+							],
+							"path": [
+								"api",
+								"courses",
+								"{{courseId}}",
+								"lessons",
+								"xxx"
 							]
 						}
 					},
@@ -3758,7 +4234,7 @@
 					"response": []
 				},
 				{
-					"name": "Finish Lesson 1 in Course",
+					"name": "(John) Finish Lesson 1 in Course",
 					"event": [
 						{
 							"listen": "test",
@@ -3820,7 +4296,7 @@
 					"response": []
 				},
 				{
-					"name": "Finish Lesson 2 in Course",
+					"name": "(John) Finish Lesson 2 in Course",
 					"event": [
 						{
 							"listen": "test",
@@ -3882,7 +4358,7 @@
 					"response": []
 				},
 				{
-					"name": "Finish Course when Lessons is Completed",
+					"name": "(John) Finish Course when Lessons is Completed",
 					"event": [
 						{
 							"listen": "test",
@@ -4869,6 +5345,243 @@
 							"response": []
 						},
 						{
+							"name": "Login with User Admin",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const { data: { accessToken } } = pm.response.json();\r",
+											"pm.environment.set('accessTokenAdmin', accessToken);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"admin@gmail.com\",\r\n    \"password\": \"admin\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{weburl}}/api/authentications",
+									"host": [
+										"{{weburl}}"
+									],
+									"path": [
+										"api",
+										"authentications"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "(Admin) Add Course with Valid Complete Data",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseJson = pm.response.json();\r",
+											"pm.environment.set(\"courseId\", responseJson.data.courseId);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessTokenAdmin}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "title",
+											"value": "Belajar Laravel",
+											"type": "text"
+										},
+										{
+											"key": "description",
+											"value": "Kursus untuk belajar membuat website menggunakan laravel untuk pemula",
+											"type": "text"
+										},
+										{
+											"key": "duration",
+											"value": "12 hours",
+											"type": "text"
+										},
+										{
+											"key": "level",
+											"value": "beginner",
+											"type": "text"
+										},
+										{
+											"key": "long_description",
+											"value": "Laravel sering digunakan dalam dunia industri khususnya pengembangan website oleh karena itu mempelajari laravel merupakan salah satu investasi yang baik untuk diri sendiri.",
+											"type": "text"
+										},
+										{
+											"key": "topics[]",
+											"value": "Memahami routes",
+											"type": "text"
+										},
+										{
+											"key": "topics[]",
+											"value": "Memahami controller",
+											"type": "text"
+										},
+										{
+											"key": "topics[]",
+											"value": "Memahami views",
+											"type": "text"
+										},
+										{
+											"key": "thumbnail",
+											"type": "file",
+											"src": "melt_chibi.jpg"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{weburl}}/api/courses",
+									"host": [
+										"{{weburl}}"
+									],
+									"path": [
+										"api",
+										"courses"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "(Admin) Add Lesson with Valid Payload",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseJson = pm.response.json();\r",
+											"    \r",
+											"pm.environment.set(\"lessonId1\", responseJson.data.lessonId);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessTokenAdmin}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"title\": \"Introduction\",\r\n    \"content\": \"Di kursus ini kita akan belajar bagaimana cara membuat website dengan laravel\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{weburl}}/api/courses/{{courseId}}/lessons",
+									"host": [
+										"{{weburl}}"
+									],
+									"path": [
+										"api",
+										"courses",
+										"{{courseId}}",
+										"lessons"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "(Admin) Add Lesson with Valid Payload",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const responseJson = pm.response.json();\r",
+											"    \r",
+											"pm.environment.set(\"lessonId2\", responseJson.data.lessonId);"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{accessTokenAdmin}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"title\": \"Core Modules\",\r\n    \"content\": \"Hal yang perlua diketahui sebelum belajar laravel adalah menginstall php, dan myqsl. Atau bisa menggunakan laragon yang sudah ada php, mysql, nginx, dll.\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{weburl}}/api/courses/{{courseId}}/lessons",
+									"host": [
+										"{{weburl}}"
+									],
+									"path": [
+										"api",
+										"courses",
+										"{{courseId}}",
+										"lessons"
+									]
+								}
+							},
+							"response": []
+						},
+						{
 							"name": "(John) Add Enrollment",
 							"event": [
 								{
@@ -4976,20 +5689,7 @@
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"let badCertificatePayloads = pm.environment.get('badCertificatePayloads');\r",
-									"\r",
-									"if (!badCertificatePayloads | badCertificatePayloads.length === 0) {\r",
-									"    badCertificatePayloads = [\r",
-									"        {},\r",
-									"        { courseId: true },\r",
-									"        { courseId: 'course-1234' },\r",
-									"        { courseId: 'course-1234', courseName: 12345 },\r",
-									"    ];\r",
-									"}\r",
-									"\r",
-									"const currentBadCertificatePayload = badCertificatePayloads.shift();\r",
-									"pm.environment.set('currentBadCertificatePayload', JSON.stringify(currentBadCertificatePayload));\r",
-									"pm.environment.set('badCertificatePayloads', badCertificatePayloads);"
+									""
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -5039,7 +5739,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{{currentBadCertificatePayload}}",
+							"raw": "{\r\n    \"courseId\": 123\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -5054,6 +5754,211 @@
 							"path": [
 								"api",
 								"certificates"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Generate Certificate with not Completed Course",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('it should response 403 status code', () => {\r",
+									"    pm.expect(pm.response).to.have.status(403);\r",
+									"});\r",
+									"\r",
+									"pm.test('response Content-Type header should have application/json value', () => {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.includes('application/json');\r",
+									"}); \r",
+									"\r",
+									"pm.test('response body should an object', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"});\r",
+									"\r",
+									"pm.test('response body have correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseJson.status).to.equal('fail');\r",
+									"    pm.expect(responseJson.message).to.be.a('string');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessTokenJohn}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"courseId\": \"{{courseId}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{weburl}}/api/certificates",
+							"host": [
+								"{{weburl}}"
+							],
+							"path": [
+								"api",
+								"certificates"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[No Test] (John) Finish Lesson 1 in Course",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessTokenJohn}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{weburl}}/api/courses/{{courseId}}/lessons/{{lessonId1}}",
+							"host": [
+								"{{weburl}}"
+							],
+							"path": [
+								"api",
+								"courses",
+								"{{courseId}}",
+								"lessons",
+								"{{lessonId1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[No Test] (John) Finish Lesson 2 in Course",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessTokenJohn}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{weburl}}/api/courses/{{courseId}}/lessons/{{lessonId2}}",
+							"host": [
+								"{{weburl}}"
+							],
+							"path": [
+								"api",
+								"courses",
+								"{{courseId}}",
+								"lessons",
+								"{{lessonId2}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[No Test] (John) Finish Course when Lessons is Completed",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessTokenJohn}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{weburl}}/api/courses/{{courseId}}/finish",
+							"host": [
+								"{{weburl}}"
+							],
+							"path": [
+								"api",
+								"courses",
+								"{{courseId}}",
+								"finish"
 							]
 						}
 					},
@@ -5163,11 +6068,21 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessTokenJohn}}",
+									"type": "string"
+								}
+							]
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"userId\": \"{{johnId}}\",\r\n    \"courseId\": \"course-1234\",\r\n    \"courseName\": \"Belajar Javascript\"\r\n}",
+							"raw": "{\r\n    \"courseId\": \"{{courseId}}\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
