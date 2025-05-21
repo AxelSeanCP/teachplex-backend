@@ -39,8 +39,12 @@ class LessonService extends BaseService
         $slug = url_title($data["title"], '-', true);
         $data["slug"] = $slug;
 
-        $maxOrder = $this->model->where("course_id", $courseId)->selectMax("lesson_order")->get()->getRow()->lesson_order;
-        $newOrder = $maxOrder ? $maxOrder + 1 : 1;
+        $lastLesson = $this->model
+        ->where("course_id", $courseId)
+        ->orderBy("lesson_order", "DESC")
+        ->first();
+        $maxOrder = (int) $lastLesson["lesson_order"];
+        $newOrder = $maxOrder + 1;
         $data["lesson_order"] = $newOrder;
 
         $this->model->insert($data);
@@ -138,14 +142,22 @@ class LessonService extends BaseService
 
     public function edit($lessonId, $lessonData)
     {
-        $this->model->where("lesson_id", $lessonId)->first();
+        $lesson = $this->model->where("id", $lessonId)->first();
+
+        if (empty($lesson)) {
+            throw new NotFoundError("Lesson not found");
+        }
 
         $this->model->update($lessonId, $lessonData);
     }
 
     public function remove($lessonId)
     {
-        $this->model->where("lesson_id", $lessonId)->first();
+        $lesson = $this->model->where("id", $lessonId)->first();
+
+        if (empty($lesson)) {
+            throw new NotFoundError("Lesson not found");
+        }
 
         $this->model->delete($lessonId);
     }

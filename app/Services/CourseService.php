@@ -98,7 +98,6 @@ class CourseService extends BaseService
         ->orderBy("lesson_order", "ASC")
         ->select("id, title")
         ->findAll();
-        log_message("debug", $id);
 
         $course["lessons"] = $lessons ?? [];
 
