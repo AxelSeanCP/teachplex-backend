@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Exceptions\BadRequestError;
 use App\Exceptions\ForbiddenError;
 use App\Exceptions\NotFoundError;
+use App\Models\Enrollment;
 use App\Models\Lesson;
 use App\Models\LessonProgress;
 
@@ -12,11 +13,13 @@ class LessonService extends BaseService
 {
     protected $model;
     protected $lessonProgressModel;
+    protected $enrollmentModel;
 
-    public function __construct(Lesson $lessonModel, LessonProgress $lessonProgressModel)
+    public function __construct(Lesson $lessonModel, LessonProgress $lessonProgressModel, Enrollment $enrollmentModel)
     {
         $this->model = $lessonModel;
         $this->lessonProgressModel = $lessonProgressModel;
+        $this->enrollmentModel = $enrollmentModel;
     }
 
     public function verifyLesson($courseId, $title)
@@ -41,9 +44,15 @@ class LessonService extends BaseService
 
         $lastLesson = $this->model
         ->where("course_id", $courseId)
+        ->withDeleted()
         ->orderBy("lesson_order", "DESC")
         ->first();
-        $maxOrder = (int) $lastLesson["lesson_order"];
+
+        $maxOrder = 0;
+        if ($lastLesson) {
+            $maxOrder = (int) $lastLesson["lesson_order"] ?? 0;
+        }
+
         $newOrder = $maxOrder + 1;
         $data["lesson_order"] = $newOrder;
 
@@ -61,6 +70,15 @@ class LessonService extends BaseService
             throw new NotFoundError("Lesson not found");
         }
 
+        $isEnrolled = $this->enrollmentModel
+        ->where("user_id", $userId)
+        ->where("course_id", $courseId)
+        ->first();
+
+        if (empty($isEnrolled)) {
+            throw new ForbiddenError("You are not enrolled in this course!");
+        }
+
         if ($lesson["lesson_order"] <= 1) {
             return $lesson;
         }
@@ -68,11 +86,14 @@ class LessonService extends BaseService
         $previousLesson = $this->model
         ->select("id")
         ->where("course_id", $courseId)
-        ->where('lesson_order', $lesson["lesson_order"] - 1)
+        ->where('lesson_order <', $lesson["lesson_order"])
+        ->orderBy("lesson_order", "DESC")
         ->first();
 
         if (!$previousLesson) {
-            throw new BadRequestError("Previous lesson not found. Invalid lesson sequence");
+            // probably the first active lesson, no previous lesson were found or already soft deleted
+            // completion check will return false so return first
+            return $lesson;
         }
 
         $completed = $this->lessonProgressModel

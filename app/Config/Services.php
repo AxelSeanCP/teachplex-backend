@@ -72,7 +72,7 @@ class Services extends BaseService
             return static::getSharedInstance(__FUNCTION__);
         }
 
-        return new lessonService(new Lesson(), new LessonProgress());
+        return new lessonService(new Lesson(), new LessonProgress(), new Enrollment());
     }
 
     public static function enrollmentService($getShared = true) 
