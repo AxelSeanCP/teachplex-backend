@@ -28,9 +28,7 @@ class CertificateController extends BaseController
             "status" => "success",
             "message" => "certificate created",
             "data" => [
-                "certificate" => [
-                    "id" => $certificateId
-                ],
+                "certificateId" => $certificateId,
                 "downloadUrl" => $downloadLink,
             ]
         ], 201);
