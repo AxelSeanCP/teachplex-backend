@@ -17,6 +17,7 @@ use App\Services\CourseService;
 use App\Services\LessonService;
 use App\Services\EnrollmentService;
 use App\Services\CertificateService;
+use App\Services\CourseProgressService;
 use App\Services\UserContext;
 
 /**
@@ -94,5 +95,14 @@ class Services extends BaseService
         $courseService = static::courseService();
 
         return new certificateService(new Certificate(), $userService, $courseService);
+    }
+
+    public static function courseProgressService($getShared = true)
+    {
+        if ($getShared) {
+            return static::getSharedInstance(__FUNCTION__);
+        }
+
+        return new courseProgressService(new Course(), new Lesson(), new CourseProgress(), new LessonProgress(), new Enrollment());
     }
 }

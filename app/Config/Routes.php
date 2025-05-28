@@ -22,6 +22,7 @@ $routes->group("api", ["filter" => "cors"], function ($routes) {
         $routes->post("/", "CourseController::store", ["filter" => ["auth", "admin"]]);
         $routes->get("/", "CourseController::index");
         $routes->get("(:segment)", "CourseController::show/$1");
+        $routes->get("(:segment)/progress", "CourseProgressController::show/$1", ["filter" => "auth"]);
         $routes->put("(:segment)", "CourseController::update/$1", ["filter" => ["auth", "admin"]]);
         $routes->delete("(:segment)", "CourseController::destroy/$1", ["filter" => ["auth", "admin"]]);
         $routes->post("(:segment)/finish", "CourseController::finish/$1", ["filter" => "auth"]);
