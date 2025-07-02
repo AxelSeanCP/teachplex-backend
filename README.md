@@ -298,9 +298,326 @@ app/
 
 ---
 
+### **3. Courses**
+
+#### **Add Course**
+
+This endpoint requires an authenticated `Admin` user to add new courses.
+
+**Authentication:**
+This endpoint requires an **Access Token** in the request headers.
+
+**Headers:**
+
+```json
+{
+  "Authorization": "Bearer <your-access-token>"
+}
+```
+
+**Endpoint:** `POST /api/courses`
+
+**Request Type: `multipart/form-data`**
+
+**Request Body:**
+
+```json
+{
+  "title": "course-title",
+  "description": "course-description",
+  "duration": "12 hours",
+  "level": "beginner",
+  "long_description": "long-course-description", //optional
+  "topics": ["course-topics-1", "course-topics-2"], //optional
+  "thumbnail": "course-thumbnail.png" //optional
+}
+```
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "courseId": "course-id"
+  }
+}
+```
+
+#### **Get Courses**
+
+**Endpoint:** `GET /api/courses`
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "courses": [
+      {
+        "id": "course-1234",
+        "title": "user-1234",
+        "description": "course-description",
+        "duration": "12 hours",
+        "level": "beginner",
+        "thumbnail": "course-thumbnail.png"
+      }
+    ]
+  }
+}
+```
+
+#### **Get Course Detail**
+
+**Endpoint:** `GET /api/courses/:courseId`
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "course": {
+      "id": "course-id",
+      "title": "course-title",
+      "description": "course-description",
+      "duration": "12 hours",
+      "level": "beginner",
+      "thumbnail": "course-thumbnail.png",
+      "long_description": "course-long-description",
+      "topics": ["course-topics-1", "course-topics-2"],
+      "lessons": [
+        {
+          "id": "lesson-id",
+          "title": "lesson-title"
+        }
+      ]
+    }
+  }
+}
+```
+
+#### **Update Course**
+
+This endpoint requires an authenticated `Admin` user to update courses.
+
+**Authentication:**
+This endpoint requires an **Access Token** in the request headers.
+
+**Endpoint:** `PUT /api/courses/:courseId`
+
+**Request Type: `multipart/form-data`**
+
+**Request Body:**
+
+```json
+{
+  "title": "course-title",
+  "description": "course-description",
+  "duration": "15 hours",
+  "level": "intermediatte",
+  "long_description": "long-course-description", //optional
+  "topics": ["course-topics-1", "course-topics-2", "course-topics-3"], //optional
+  "thumbnail": "course-thumbnail.png" //optional
+}
+```
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "message": "Course updated successfully"
+}
+```
+
+#### **Delete Course**
+
+This endpoint requires an authenticated `Admin` user to delete courses.
+
+**Authentication:**
+This endpoint requires an **Access Token** in the request headers.
+
+**Endpoint:** `DELETE /api/courses/:courseId`
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "message": "Course deleted"
+}
+```
+
+---
+
+### **4. Lessons**
+
+> This resource requires an **Access Token** in the request headers.
+
+**Headers:**
+
+```json
+{
+  "Authorization": "Bearer <your-access-token>"
+}
+```
+
+#### **Add Lesson**
+
+This endpoint requires an authenticated `Admin` user to add lesson.
+
+**Endpoint:** `POST /api/courses/:courseId/lessons`
+
+**Request Body:**
+
+```json
+{
+  "title": "lesson-title",
+  "content": "lesson-content"
+}
+```
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "lessonId": "lesson-id"
+  }
+}
+```
+
+#### **Get Lesson Detail**
+
+> viewing lesson detail will update lesson progress if enrolled to the course
+
+**Endpoint:** `GET /api/courses/:courseId/lessons/:lessonId`
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "lesson": {
+      "id": "lesson-id",
+      "title": "lesson-title",
+      "slug": "lesson-slug",
+      "content": "lesson-content",
+      "lesson_order": "1"
+    }
+  }
+}
+```
+
+#### **Update Lesson**
+
+This endpoint requires an authenticated `Admin` user to update lesson.
+
+**Endpoint:** `PUT /api/courses/:courseId/lessons/:lessonId`
+
+**Request Body:**
+
+```json
+{
+  "title": "lesson-title",
+  "content": "lesson-content"
+}
+```
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "message": "Lesson updated successfully"
+}
+```
+
+#### **Delete Lesson**
+
+This endpoint requires an authenticated `Admin` user to delete lesson.
+
+**Endpoint:** `DELETE /api/courses/:courseId/lessons`
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "message": "Lesson deleted successfully"
+}
+```
+
+### **5. Course & Lesson Progress**
+
+> This resource requires an **Access Token** in the request headers.
+
+**Headers:**
+
+```json
+{
+  "Authorization": "Bearer <your-access-token>"
+}
+```
+
+#### **Get Overall Course Progress**
+
+**Endpoint:** `GET /api/courses/:courseId/progress`
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "data": {
+    "progress": {
+      "course_id": "course-id",
+      "course_title": "course-title",
+      "is_enrolled": true,
+      "overall_course_completed": true,
+      "overall_course_completed_at": "2025-05-23 10:15:23",
+      "total_lessons": 1,
+      "completed_lessons_count": 1,
+      "progress_percentage": 100,
+      "lessons": [
+        {
+          "id": "lesson-id",
+          "title": "lesson-title",
+          "slug": "lesson-slug",
+          "lesson_order": 2,
+          "is_completed": true,
+          "completed_at": "2025-05-23 10:11:59"
+        }
+      ]
+    }
+  }
+}
+```
+
+#### **Finish Course**
+
+> finish lessons before finishing the course by viewing the lessons
+
+**Endpoint:** `/api/courses/:courseId/finish`
+
+**Response:**
+
+```json
+{
+  "status": "success",
+  "message": "Course completed"
+}
+```
+
+---
+
 ### **3. Enrollments**
 
-> This endpoint requires an **Access Token** in the request headers.
+> This resource requires an **Access Token** in the request headers.
 
 **Headers:**
 
@@ -320,7 +637,6 @@ app/
 {
   "courseId": "course-12345"
 }
-// input courseId from wordpress
 ```
 
 **Response:**
@@ -348,8 +664,7 @@ app/
       {
         "id": "enrollment-1234",
         "userId": "user-1234",
-        "courseId": "course-1234",
-        "isCompleted": 1
+        "courseId": "course-1234"
       }
     ]
   }
@@ -369,17 +684,47 @@ app/
 
 > Note: This endpoint always returns a `200 OK` status. If the user is not enrolled in any courses, the `enrollments` array will be empty.
 
-#### **Delete Enrollment**
+#### **Get All User Enrollments**
 
-**Endpoint:** `DELETE /api/enrollments`
+> This endpoint requires an authenticated `Admin` user to get all user enrollments.
 
-**Request Body:**
+**Endpoint:** `/api/enrollments/all`
+
+**Response:**
 
 ```json
 {
-  "courseId": "course-1234"
+  "status": "success",
+  "data": {
+    "enrollments": [
+      {
+        "id": "enrollment-id",
+        "user_id": "user-id",
+        "course_id": "course-id",
+        "created_at": "2025-05-26 09:45:23",
+        "updated_at": "2025-05-26 09:45:23",
+        "user_name": "john",
+        "course_title": "Belajar Laravel"
+      },
+      {
+        "id": "enrollment-id",
+        "user_id": "user-id",
+        "course_id": "course-id",
+        "created_at": "2025-05-23 13:09:00",
+        "updated_at": "2025-05-23 13:09:00",
+        "user_name": "jane",
+        "course_title": "Belajar Laravel"
+      }
+    ]
+  }
 }
 ```
+
+#### **Delete Enrollment**
+
+> This endpoint requires an authenticated `Admin` user to delete enrollment.
+
+**Endpoint:** `DELETE /api/enrollments/:enrollmentId`
 
 **Response:**
 
@@ -397,6 +742,8 @@ app/
 > Manage and verify course completion certificates. Some endpoints **require authentication**.
 
 #### **Upload Certificate Template**
+
+> This endpoint requires an authenticated `Admin` user to upload template.
 
 > This endpoint requires an **Access Token** in the request headers.
 
@@ -435,14 +782,15 @@ app/
 }
 ```
 
+> note: make sure the course is finished before generating certificate
+
 **Endpoint:** `POST /api/certificates`
 
 **Request Body:**
 
 ```json
 {
-  "courseId": "course-1234",
-  "courseName": "Learn JavaScript"
+  "courseId": "course-1234"
 }
 ```
 
@@ -452,15 +800,25 @@ app/
 {
   "status": "success",
   "data": {
-    "certificate": {
-      "id": "certificateId"
-    },
+    "certificateId": "certificate-id",
     "downloadUrl": "download-link"
   }
 }
 ```
 
 #### **Get All Certificates**
+
+> This endpoint requires an authenticated `Admin` user to get all certificates.
+
+> This endpoint requires an **Access Token** in the request headers.
+
+**Headers:**
+
+```json
+{
+  "Authorization": "Bearer <your-access-token>"
+}
+```
 
 > You can also **filter results** using optional query parameters `name` and/or `email`.
 
@@ -487,7 +845,6 @@ app/
         "id": "certificateId",
         "userId": "user-1234",
         "courseId": "course-1234",
-        "courseName": "Learn JavaScript",
         "pdfUrl": "/certificates/{certificateId}.pdf",
         "user_name": "Axel"
       }
@@ -507,12 +864,13 @@ app/
   "status": "success",
   "data": {
     "certificate": {
-      "id": "certificateId",
-      "userId": "user-1234",
-      "courseId": "course-1234",
-      "courseName": "Learn JavaScript",
-      "pdfUrl": "/certificates/{certificateId}.pdf",
-      "user_name": "Axel"
+      "id": "certificate-id",
+      "user_id": "user-id",
+      "course_id": "course-id",
+      "pdf_url": "http://teachplex-backend.test/api/certificates/download/certificate-id.pdf",
+      "created_at": "2025-05-26 09:48:20",
+      "updated_at": "2025-05-26 09:48:20",
+      "user_name": "john"
     }
   }
 }
