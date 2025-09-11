@@ -44,7 +44,6 @@ class LessonService extends BaseService
 
         $lastLesson = $this->model
         ->where("course_id", $courseId)
-        ->withDeleted()
         ->orderBy("lesson_order", "DESC")
         ->first();
 

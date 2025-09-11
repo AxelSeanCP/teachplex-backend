@@ -83,7 +83,8 @@ class CourseService extends BaseService
     {
         $course = $this->model
         ->select("id, title, description, duration, level, thumbnail, long_description, topics, created_at, updated_at")
-        ->first($id);
+        ->where('id', $id)
+        ->first();
 
         if (!$course) {
             throw new NotFoundError("Course not found");

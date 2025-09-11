@@ -50,6 +50,7 @@ class CertificateService extends BaseService
         $templatePath = FCPATH . "uploads/certificate_templates/" . $defaultTemplate;
 
         $templateFile = file_exists($templatePath) ? $defaultTemplate : null;
+        log_message("debug", json_encode($course["title"]));
 
         $html = view("certificates/template", [
             "user" => $user,
